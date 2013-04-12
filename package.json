@@ -14,7 +14,9 @@
     "grunt-contrib-uglify": "~0.1.2",
     "grunt-contrib-watch": "~0.3.1",
     "jade-loader": "~0.5.0",
-    "jshint-loader": "~0.5.0"
+    "jshint-loader": "~0.5.0",
+    "github": "~0.1.8",
+    "github-oauth": "~0.0.4"
   },
   "scripts": {
   },
