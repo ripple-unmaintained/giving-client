@@ -1,0 +1,21 @@
+case tx.type
+  when "sent"
+    .type-info You sent&nbsp;
+      span(title="{{tx.counterparty}}") {{tx.counterparty | rpcontactname}}&nbsp;
+      span.number {{tx.amount | rpamount}}&nbsp;
+      span.currency {{tx.currency}}
+  when "received"
+    .type-success
+      span(title="{{tx.counterparty}}") {{tx.counterparty | rpcontactname}} sent you&nbsp;
+      span.number {{tx.amount | rpamount}}&nbsp;
+      span.currency {{tx.currency}}
+  when "trusted"
+    .type-success
+      span(title="{{tx.counterparty}}") {{tx.counterparty | rpcontactname}} now trusts you for&nbsp;
+      span.number {{tx.amount | rpamount}}&nbsp;
+      span.currency {{tx.currency}}
+  when "trusting"
+    .type-success
+      span(title="{{tx.counterparty}}") You now trust {{tx.counterparty | rpcontactname}} for&nbsp;
+      span.number {{tx.amount | rpamount}}&nbsp;
+      span.currency {{tx.currency}}
