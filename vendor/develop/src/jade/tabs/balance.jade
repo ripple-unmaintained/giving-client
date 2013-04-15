@@ -1,0 +1,93 @@
+include ../menu/wallet.jade
+section.panel.content(ng-controller="BalanceCtrl")
+
+  //- Disconnected
+
+  group.disconnected(ng-hide="connected")
+    p.literal You have to be online to see this screen
+
+  //- Connected
+
+  group(ng-show="connected")
+    .div#welcome(ng-hide='account.Balance')
+      p.title Welcome to Ripple.
+      p You currently don't have any ripples (XRP). To get started you can:
+      .actions
+        a.bitcoin(href="https://bitcointalk.org/index.php?topic=145506", target="_blank")
+        a.receive(href="#receive")
+        span.nexus
+    .currency-summary.positive(ng-show='account.Balance')
+      .balancebox
+        .label XRP - Ripple
+        .balance
+          span(rp-tooltip="{{account.Balance | rpamount}}  (reserve: {{ account_reserve | rpamount }} XRP)") {{account.Balance | rpamount:{rel_precision: 0} }}
+      .balancebox(ng-repeat="entry in balances", ng-hide="entry.total.is_zero()")
+        .label {{entry.total | rpcurrencyfull}}
+        .balance
+          span(rp-tooltip="{{entry.total | rpamount}}") {{entry.total | rpamount:{rel_precision: 0} }}
+
+    table.table.events(ng-show="account.Balance")
+      caption Activity
+      thead
+        //- Loading screen
+        tr(ng-hide="transactions")
+          td(colspan=2) Loading...
+
+        //- Entries
+        tr(ng-show="transactions")
+          th.date Date
+          th.desc Event
+      tbody(ng-class="{passive: loading}")
+        tr(
+          ng-repeat="entry in transactions"
+          ng-class="entry.transaction.type"
+          rp-link-tx="entry.hash"
+          )
+          td.date {{entry.date | rpfromnow}}
+          td.desc(ng-switch on="entry.transaction.type")
+            .transaction(ng-switch-when="sent") You sent&nbsp;
+              span.address(title="{{entry.transaction.counterparty}}") {{entry.transaction.counterparty | rpcontactname}}
+              strong  {{entry.transaction.amount | rpamount}} {{entry.transaction.amount | rpcurrency}}
+              a.add(ng-hide="entry.transaction.counterparty | rponlycontactname", href="#/contact?to={{entry.transaction.counterparty}}", class="btn sign small", rp-no-propagate) +
+              include balance/effects
+            .transaction(ng-switch-when="received")
+              span.address(title="{{entry.transaction.counterparty}}") {{entry.transaction.counterparty | rpcontactname}}
+              |  sent you
+              strong  {{entry.transaction.amount | rpamount}} {{entry.transaction.amount | rpcurrency}}
+              a.add(ng-hide="entry.transaction.counterparty | rponlycontactname", href="#/contact?to={{entry.transaction.counterparty}}", class="btn sign small", rp-no-propagate) +
+              include balance/effects
+            .transaction(ng-switch-when="trusted")
+              span.address(title="{{entry.transaction.counterparty}}") {{entry.transaction.counterparty | rpcontactname}}
+              |  now trusts you for
+              strong  {{entry.transaction.amount | rpamount}} {{entry.transaction.amount | rpcurrency}}
+              a.add(ng-hide="entry.transaction.counterparty | rponlycontactname", href="#/contact?to={{entry.transaction.counterparty}}", class="btn sign small", rp-no-propagate) +
+              include balance/effects
+            .transaction(ng-switch-when="trusting") You now trust&nbsp;
+              span.address(title="{{entry.transaction.counterparty}}") {{entry.transaction.counterparty | rpcontactname}}
+              |  for&nbsp;
+              strong {{entry.transaction.amount | rpamount}} {{entry.transaction.amount | rpcurrency}}
+              a.add(ng-hide="entry.transaction.counterparty | rponlycontactname", href="#/contact?to={{entry.transaction.counterparty}}", class="btn sign small", rp-no-propagate) +
+              include balance/effects
+            .transaction(ng-switch-when="offernew") You created an offer accepting&nbsp;
+              strong {{entry.transaction.pays | rpamount}} {{entry.transaction.pays | rpcurrency}}
+              |  for&nbsp;
+              strong {{entry.transaction.gets | rpamount}} {{entry.transaction.gets | rpcurrency}}
+              include balance/effects
+            .transaction(ng-switch-default)
+              include balance/effects
+
+      tfoot(ng-show="pages_count")
+        tr
+          td(colspan=2, class="pagination")
+            ul
+              li(ng-class="{disabled: !prev_page}")
+                a(ng-click="goToPage(prev_page)") &laquo;
+              li(ng-repeat="i in [1,pages_count] | rprange",ng-class="{active: current_page==i}")
+                a(ng-click="goToPage(i)", ng-hide="current_page==i") {{i}}
+                span(ng-show="current_page==i") {{i}}
+              li(ng-class="{disabled: !next_page}")
+                a(ng-click="goToPage(next_page)") &raquo;
+            span.spinner(
+              ng-show="loading"
+              rp-spinner="4",
+              )
