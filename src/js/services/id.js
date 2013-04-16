@@ -34,7 +34,7 @@ module.factory('rpId', ['$location', '$route', '$routeParams',
       if (this.isReturning()) {
         $location.path('/login');
       } else {
-        $location.path('/register');
+        $location.path('/signup');
       }
     }
   };
