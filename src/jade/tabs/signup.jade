@@ -7,6 +7,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     span (only accounts created prior to 30 Apr 2013 are eligible)
     h3 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
+    h1 Confirm your details for the giveaway
     form(id="signup-form", method="post")
       label(for="name") Name
       input(type="text",id="name", name="name", value="Lynnie Wim")
@@ -15,8 +16,6 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       input(type="text", id="email", name="email", value="lynnie@singapore.la")
       br
       input(type="checkbox")
-      label I agree to be part of this&nbsp;
+      label(class="agree") I agree to be part of this&nbsp;
         a(href='#', ng-click="developerProgram") developer preview program
-      input(type="button", value="confirm", ng-click="confirm")
-    span Why do we need your details
-      a(ng-click="details") ?
+      input(type="button", class="btn btn-info", value="confirm", ng-click="confirm")

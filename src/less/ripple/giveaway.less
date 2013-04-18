@@ -5,7 +5,6 @@
 		border:0;
 	}
 	&.signup{
-		text-align: center;
 		h1{
 			font-size:44px;
 			padding-top: 25px;
@@ -22,12 +21,42 @@
 		}
 		.btn{
 			display:block;
-			margin: 25px auto 15px;
+			
 			min-width:300px;
 		}
 		span{
 			display:block;
 			color: #666;
+		}
+		.step-one{
+			text-align: center;
+			.btn{
+				margin: 25px auto 15px;	
+			}
+		}
+
+		#signup-form{
+			margin-left: 220px;
+			max-width:400px;
+			input{
+				&[type="text"], &[type="email"]{
+					width:90%;
+				}
+				&[type="checkbox"]{
+					display:inline;
+					margin-top: 0;
+				}
+			}
+			.agree{
+				display:inline;
+				font-size: 14px;
+				margin-left: 5px;
+			}
+
+			.btn{
+
+				margin-top: 25px;
+			}
 		}
 	}
 }
