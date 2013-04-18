@@ -1,6 +1,11 @@
 section.single.content.signup(ng-controller="SignupCtrl")
   div.step-one(ng-show="step == 'one'")
+    h1 Money is about to go opensouce
+    h2 To get started, authenticate with github
+    img(src="img/octocat.jpg", width="200px")
     input(type="button", value="github", ng-click="oauth('github')")
+    span (only accounts created prior to 30 Apr 2013 are eligible)
+    h2 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
     form(id="signup-form", method="post")
       label(for="name") Name
@@ -13,5 +18,5 @@ section.single.content.signup(ng-controller="SignupCtrl")
       label I agree to be part of this&nbsp;
         a(href='#', ng-click="developerProgram") developer preview program
       input(type="button", value="confirm", ng-click="confirm")
-    span Why do we need your details?
+    span Why do we need your details
       a(ng-click="details") ?
