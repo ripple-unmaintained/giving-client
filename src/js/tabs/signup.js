@@ -25,21 +25,26 @@ SignupTab.prototype.angular = function (module) {
   {
 
     $scope.step = 'one';
+    $scope.mode = 'form';
 
     $scope.oauth = function(provider){
       //window.location = githubOauth;
       $scope.step = 'two';
     };
 
-    $scope.confirm = function(){
+    $scope.step_two = function(){
       $scope.step = 'three';
       // set cookie info here
 
     };
 
+    $scope.step_three = function(){
+      $scope.mode = 'welcome';
+    };
+
     // hook into popup service
     $scope.developerProgram = function(){
-      alert('hi developer');
+
     };
 
   }]);

@@ -18,6 +18,9 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       input(type="checkbox")
       label(class="agree") I agree to be part of this&nbsp;
         a(href='#', ng-click="developerProgram") developer preview program
+<<<<<<< Updated upstream
+      input(type="button", class="btn btn-info", value="confirm", ng-click="confirm")
+=======
       input(type="button", value="confirm", ng-click="step_two()")
     span Why do we need your details
       a(ng-click="details") ?
@@ -25,3 +28,4 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     include signup-register
   div.step-login(ng-show="step == 'login'")
     include signup-login
+>>>>>>> Stashed changes

@@ -1,0 +1,102 @@
+section.single.content
+  .mode-form(ng-show='mode=="form"')
+    h1 Create a ripple Wallet
+    p.literal Ripple is an open source p2p payment network — a fast, easy way to send any kind of money to
+      | anyone in the world.
+    p.literal.hint
+      | Your Wallet is only as safe as your Wallet Name and Passphrase, used to encrypt your Wallet data.
+      | Choose a Passphrase you can easily remember but others cannot guess. Hint: Mix letters, numbers, and symbols.
+    p.literal.hint.important
+      | Only you have this Wallet Name and Passphrase and are responsible for their safekeeping. ripple cannot
+      | recover them if you forget them!
+    form(name='registerForm', ng-submit='submitForm()')
+      label(for='register_username') Create Wallet Name
+      input#register_username(
+        name='register_username', type='text', ng-model="username")
+      .horiz
+        div
+          label(for='register_password') Create Wallet Passphrase
+          input#register_password(
+            name='register_password1', type='password'
+            ng-model="password1")
+          p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
+        div
+          label(for='register_password2') Re-Enter Passphrase
+          input#register_password2(
+            name='register_password2'
+            type='password'
+            ng-model="password2")
+        div(class="strength {{strength}}")
+          {{strength}}
+      div(ng-show="showMasterKeyInput")
+        label(for='register_masterkey')
+          | Secret Account Key&nbsp;
+          a(ng-click="showMasterKeyInput=false;") (hide)
+        input#register_masterkey(name='register_masterkey', type='text', ng-model="masterkey", rp-master-key)
+        .errorBox(ng-show="registerForm.register_masterkey.$error.rpMasterKey")
+          p.text-error Secret Account Key is invalid
+      .submitsection
+        button.btn.btn-info(ng-click="step_three()") Create Wallet
+        .storeinfo
+          | Store your wallet with:&nbsp;
+          br
+          span(ng-hide="storeChange")
+            strong {{blobBackendCollection.something.name}}&nbsp;
+            a(ng-click="storeChange=true") change
+          span(ng-show="storeChange", class="storeChange")
+            select(ng-model="blobBackendCollection.something", ng-options="b.name for b in blobBackendCollections", ng-change="backendChange()")
+      p.literal.throw
+        | Have a wallet already?&nbsp;
+        a(href='#/login') Open wallet
+        br
+        span(ng-hide="showMasterKeyInput")
+          | Need to use your Secret Key?&nbsp;
+          a(ng-click="showMasterKeyInput=true") Use Key
+
+  group.mode-masterkeyerror(ng-show='mode=="masterkeyerror"')
+    h1 Secret Account Key error
+    p.literal There is a wallet with your wallet name and pass phrase, but the given Secret Account Key is not connected to it. If you decide to continue registration your new Secret Account Key will be used for current wallet name and pass phrase.
+    p
+      button.btn.btn-info(ng-click='mode="form"') Back
+      | &nbsp;
+      button.btn(ng-click='register()') Overwrite current key
+
+  group.mode-welcome(ng-show='mode=="welcome"')
+    h1 Welcome To ripple
+    p.important Important:
+    p.hint The Secret Account Key below gives access to your money in the unlikely case that you lose your wallet name or passphrase.
+      | In that case your contacts will be lost, but with this Secret Account Key alone anyone can retrieve your money. So please
+      | store it somewhere PRIVATE AND SAFE. Read more about keys and wallet safety in&nbsp;
+      a(href="#") Security
+    .credentials
+      span.username
+        | Wallet name:
+        span.value {{username}}
+      span.password
+        | Pass phrase:
+        span.value(ng-show="showPassword==true") {{password1}}
+        span.value(ng-hide="showPassword==true") {{password}}
+        rp-confirm(
+          action-text="Are you in a safe place where no person or camera can see your screen?"
+          action-button-text="Yes, show me"
+          action-function="showPassword=true"
+          cancel-button-text="no"
+          ng-hide="showPassword==true")
+            a Show
+        a(ng-click="showPassword=false", ng-show="showPassword==true") Hide
+    .secret
+      p.important Secret Account key:
+      p.key(ng-show="showSecret==true") {{keyOpen}}
+      p.key(ng-hide="showSecret==true") {{key}}
+      p(ng-hide="showSecret==true")
+        rp-confirm(
+          action-text="Are you in a safe place where no person or camera can see your screen?"
+          action-button-text="Yes, show me"
+          action-function="showSecret=true"
+          cancel-button-text="no")
+            button.btn.btn-info.btn-small Show secret account key
+      p(ng-show="showSecret==true")
+        button.btn.btn-info.btn-small(ng-click="showSecret=false") Hide secret account key
+    p.important Have you saved your Secret Account Key somewhere safe?
+    .action
+      a.btn.btn-info.btn-big(href='#balance', ng-click='reset()') Yes, I saved my secret account key
