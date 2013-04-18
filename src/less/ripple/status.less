@@ -3,12 +3,14 @@
 
 #status {
   position: absolute;
-  top: 18px;
+  top: 0px;
   right: 0;
   width: @statusWidth;
   height: 81px;
   background-color: #fff;
   .rounded(10px);
+  border-top-left-radius:0; 
+  border-top-right-radius:0; 
   .drop-shadow(0, 0, 12px, 0.20);
   z-index: 10;
 
@@ -154,9 +156,10 @@
 
 #notification {
   position: absolute;
-  top: 55px;
+  top: 35px;
   right: @notifyMargin;
   width: @statusWidth - 10px - 2*@notifyMargin;
+  z-index: 4;
 
   .notification {
     position: absolute;
