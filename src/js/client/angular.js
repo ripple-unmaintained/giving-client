@@ -36,6 +36,7 @@ Angular.load = function ()
   require('../services/popup');
   require('../services/rippletxt');
   require('../services/domainalias');
+  require('../services/giveaway.js');
 };
 
 
@@ -43,6 +44,7 @@ var app = angular.module('rp', [
   'ng',
   // Directives
   'id',
+  'giveaway',
   'charts',
   'effects',
   'events',
