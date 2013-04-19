@@ -2,6 +2,7 @@
 
 //variables
 @sans: 'OpenSansLight', 'HelveticaNeue-Light', Helvetica, Arial, sans-serif;
+@lightyellow: lighten(@yellow,40%);
 
 //start giveaway styling
 .giveaway{
@@ -151,5 +152,55 @@ header{
 				.transition-duration(2s);
 			}
 		}
+	}
+}
+
+//overridding styles from the register tab
+#t-register{
+	.mode-welcome{
+		h2{
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			margin-bottom: 0;
+			margin:0 auto;
+			padding:0 5px;
+			width:300px;
+			font-size: 22px;
+			background-color: @yellow;
+		}
+
+		h1{
+			padding-top: 15px;
+		}
+		text-align: center;
+		.secret{
+			margin:35px 0 75px 0;
+			text-align: left;
+			float:left;
+			width:100%;
+			padding:20px 5px;
+			background-color: @lightyellow;
+			border-color: darken(@lightyellow,20%);
+			position: relative;
+
+			.btn{
+				position: absolute;
+				top:6px;
+				right:5px;
+				min-width: 150px;
+				&.btn-warning{
+					border-color:@orange;
+				}
+			}
+			.key{
+				float:left;
+				font-size:35px;
+				display: block;
+				font-family:@currencyFont;
+				letter-spacing: -1px;
+			}
+		}
+
+
 	}
 }
