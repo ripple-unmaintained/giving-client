@@ -18,7 +18,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       input(type="checkbox")
       label(class="agree") I agree to be part of this&nbsp;
         a(href='#', ng-click="developerProgram") developer preview program
-      input(type="button", value="confirm", ng-click="step_two()")
+      input(type="button", class="btn btn-info", value="confirm", ng-click="step_two()")
     span Why do we need your details
       a(ng-click="details") ?
   div.step-three(ng-show="step == 'three'")
