@@ -69,3 +69,7 @@ exports["tx"] = function (callback) {
 exports["signup"] = function (callback) {
   callback(require('../tabs/signup'));
 };
+
+exports["getripple"] = function (callback) {
+  callback(require('../tabs/getripple'));
+};
