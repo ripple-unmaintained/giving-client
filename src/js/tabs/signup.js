@@ -38,8 +38,6 @@ SignupTab.prototype.angular = function (module) {
 
     $scope.mode = 'form';
 
-    $scope.step = 'three';
-    $scope.mode = 'welcome';
 
     $scope.oauth = function(provider){
       window.location = githubOauth;

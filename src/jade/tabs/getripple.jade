@@ -5,19 +5,19 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
     h2 by completing these actions!
       span rate timestamped 20:13 14 May 2013
     ul
-      li#code.done 
+      li#code(ng-class="codeClass", ng-click="codeClass='done'")
         div.text
           |Follow us on
           a(href="https://github.com/rippleFoundation", target="_github") Github
-      li#wiki
+      li#wiki(ng-class="wikiClass", ng-click="wikiClass='done'")
         div.text
           |Read our
           a(href="https://ripple.com/wiki", target="_wiki") wiki
-      li#video
+      li#video(ng-class="videoClass", ng-click="videoClass='done'")
         div.text
           |watch our
           a(href="https://vimeo.com", target="_videos") videos
-      li#list
+      li#list(ng-class="listClass", ng-click="listClass='done'")
         div.text
           |Look at our list of
           a(href="https://ripple.com/wiki", target="_build", ng-click="done()") things to build
