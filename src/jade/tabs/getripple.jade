@@ -8,16 +8,18 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
       li#code.done 
         div.text
           |Follow us on
-          a(href="https://github.com/rippleFoundation") Github
-      li#wiki 
+          a(href="https://github.com/rippleFoundation", target="_github") Github
+      li#wiki
         div.text
-          |Read our 
-          a(href="https://ripple.com/wiki") wiki
+          |Read our
+          a(href="https://ripple.com/wiki", target="_wiki") wiki
       li#video
         div.text
-          |watch our 
-          a(href="https://vimeo.com") videos
-      li#list 
+          |watch our
+          a(href="https://vimeo.com", target="_videos") videos
+      li#list
         div.text
           |Look at our list of
-          a(href="https://ripple.com/wiki") things to build
+          a(href="https://ripple.com/wiki", target="_build", ng-click="done()") things to build
+  div(ng-show="finish")
+    | You got 500 ripples

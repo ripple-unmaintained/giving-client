@@ -27,10 +27,15 @@ GetRippleTab.prototype.angular = function (module)
   module.controller('GetRippleCtrl', ['$scope', '$routeParams', 'rpId',
                                  function ($scope, $routeParams, $id)
   {
-    // check if logged in
-    if (!$id.loginStatus) return $id.goId();
 
-    console.log('loaded');
+    $scope.clicked = function(){
+
+    };
+
+    $scope.done = function(){
+      $scope.finish = true;
+    };
+
   }]);
 };
 
