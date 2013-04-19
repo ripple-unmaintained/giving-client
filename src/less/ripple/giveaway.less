@@ -1,5 +1,9 @@
-//custom styling for the giveaway client. don't want to mess up existing client's css structure. will merge when it is time. 
+//custom styling for the giveaway client. don't want to mess up existing client's css structure. will merge when it is time.
 
+//variables
+@sans: 'OpenSansLight', 'HelveticaNeue-Light', Helvetica, Arial, sans-serif;
+
+//start giveaway styling
 .giveaway{
 	h1{
 		border:0;
@@ -83,6 +87,8 @@ header{
 	h1{
 		text-align: left;
 		position: relative;
+		padding-bottom: 10px;
+		margin-bottom: 5px;
 		span{
 			font-size:16px;
 			position: absolute;
@@ -97,6 +103,53 @@ header{
 			font-size:11px;
 			position: absolute;
 			right:0;
+		}
+	}
+
+	ul{
+		margin:0;
+		padding:0;
+		width:100%;
+		li{
+			width:22%;
+			margin-right: 2.5%;
+			display:block;
+			float:left;
+			border:1px solid #ddd;
+			height:300px;
+			.border-radius(5px);
+			background-repeat: no-repeat;
+			background-image: url(../../img/ripple-giveaway-sprite.png);
+			background-position: -102px  30px;
+			opacity:0.6;
+			position: relative;
+			&#wiki{
+				background-position: -285px 30px;
+			}
+			&#video{
+				background-position: -475px 30px;
+			}
+			&#list{
+				background-position: -665px 30px;
+			}
+
+			.text{
+				width:100%;
+				position: absolute;
+				text-align: center;
+				top:200px;
+				font-family: @sans;
+				a{
+					display:block;
+					font-size:22px;
+				}
+			}
+
+			&:hover{
+				cursor: pointer;
+				opacity: 1;
+				.transition-duration(2s);
+			}
 		}
 	}
 }
