@@ -124,6 +124,11 @@ header{
 			background-position: -102px  30px;
 			opacity:0.6;
 			position: relative;
+			a{
+				display:block;
+				width:100%;
+				height:100%;
+			}
 			&#wiki{
 				background-position: -285px 30px;
 			}
@@ -133,17 +138,21 @@ header{
 			&#list{
 				background-position: -665px 30px;
 			}
-			&.done{
-				background-position: -850px 30px;
-				opacity:1;
-				.transition-duration(0s);
-				.text{
-					color:#ddd;
-					a{
+			&#code, &#wiki, &#list, &#video{
+				&.done{
+					background-position: -850px 30px;
+					opacity:1;
+					.transition-duration(0s);
+					.text{
 						color:#ddd;
+						.bigger{
+							color:#ddd;
+						}
 					}
 				}
+
 			}
+
 
 			.text{
 				width:100%;
@@ -151,9 +160,11 @@ header{
 				text-align: center;
 				top:200px;
 				font-family: @sans;
-				a{
+				color:#333;
+				.bigger{
 					display:block;
 					font-size:22px;
+					color:@blue;
 				}
 			}
 
