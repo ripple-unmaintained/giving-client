@@ -10,10 +10,10 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     h1 Confirm your details for the giveaway
     form(id="signup-form", method="post")
       label(for="name") Name
-      input(type="text",id="name", name="name", value="Lynnie Wim")
+      input(type="text",id="name", name="name", ng-model="name")
       br
       label(for="email") Email
-      input(type="text", id="email", name="email", value="lynnie@singapore.la")
+      input(type="text", id="email", name="email", ng-model="email")
       br
       input(type="checkbox")
       label(class="agree") I agree to be part of this&nbsp;

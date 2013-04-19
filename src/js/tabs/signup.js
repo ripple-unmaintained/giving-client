@@ -1,6 +1,6 @@
 var util = require('util');
 var Tab = require('../client/tab').Tab;
-var githubOauth = 'http://l:3001/login/github';
+var githubOauth = 'http://l:3001/auth/github';
 
 var SignupTab = function ()
 {
@@ -20,16 +20,24 @@ SignupTab.prototype.generateHtml = function ()
 SignupTab.prototype.angular = function (module) {
   var app = this.app;
 
-  module.controller('SignupCtrl', ['$scope', '$location', 'rpId', 'rpGiveaway',
-                                     function ($scope, $location, $id, $giveaway)
+  module.controller('SignupCtrl', ['$scope', '$location', 'rpId', 'rpGiveaway', '$routeParams',
+                                     function ($scope, $location, $id, $giveaway, $routeParams)
   {
 
-    $scope.step = 'one';
+    if ($routeParams.register)
+    {
+      $scope.step = 'two';
+      $scope.name = $routeParams.name;
+      $scope.email = $routeParams.email;
+    }
+    else
+      $scope.step = 'one';
+
+
     $scope.mode = 'form';
 
     $scope.oauth = function(provider){
-      //window.location = githubOauth;
-      $scope.step = 'two';
+      window.location = githubOauth;
     };
 
     $scope.step_two = function(){
