@@ -28,12 +28,19 @@ GetRippleTab.prototype.angular = function (module)
                                  function ($scope, $routeParams, $id)
   {
 
+    $scope.claim = false;
+
     $scope.clicked = function(){
 
     };
 
     $scope.done = function(){
       $scope.finish = true;
+    };
+
+    $scope.congrats = function(){
+      $scope.finish = false;
+      $scope.claim = true;
     };
 
   }]);

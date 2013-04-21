@@ -1,5 +1,5 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
-  div.padding
+  div.padding(ng-hide="claim")
     h1 Earn 500 ripples (XRP)
       span currently 25 USD
     h2 by completing these actions!
@@ -11,7 +11,7 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
             |Follow us on
             span.bigger Github
         li#wiki(ng-class="wikiClass", ng-click="wikiClass='done'")
-          a(href="https://ripple.com/wiki", target="_wiki") 
+          a(href="https://ripple.com/wiki", target="_wiki")
             div.text
               |Read our
               span.bigger wiki
@@ -21,9 +21,12 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
             |watch our
             span.bigger videos
       li#list(ng-class="listClass", ng-click="listClass='done'")
-        a(href="https://ripple.com/wiki", target="_build", ng-click="done()") 
+        a(href="https://ripple.com/wiki", target="_build", ng-click="done()")
           div.text
             |Look at our list of
             span.bigger things to build
   div(ng-show="finish")
-    | You got 500 ripples
+    p Good job you can claim your XRP.
+    a.btn.btn-info.btn-big(ng-click='congrats()') Claim
+  div(ng-show="claim")
+    | Congratulations you have earned 500 XRP!!!
