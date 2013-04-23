@@ -25,7 +25,7 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
           div.text
             |Look at our list of
             span.bigger things to build
-  div(ng-show="finish")
+  div(ng-show="finish", class="claim")
     p Good job you can claim your XRP.
     a.btn.btn-info.btn-big(ng-click='congrats()') Claim
   div(ng-show="claim")
