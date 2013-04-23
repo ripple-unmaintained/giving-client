@@ -4,7 +4,7 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
       span currently 25 USD
     h2 by completing these actions!
       span rate timestamped 20:13 14 May 2013
-    ul
+    ul(class="walkthrough-list")
       li#code(ng-class="codeClass", ng-click="codeClass='done'")
         a(href="https://github.com/rippleFoundation/", target="_github")
           div.text
@@ -28,5 +28,29 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
   div(ng-show="finish", class="claim")
     p Good job you can claim your XRP.
     a.btn.btn-info.btn-big(ng-click='congrats()') Claim
-  div(ng-show="claim")
-    | Congratulations you have earned 500 XRP!!!
+  div#congrats(ng-show="claim")
+    h1 
+      span(class="tick") 
+      |Congratulations you have earned
+    h2 500 XRP
+    p(class="rate-timestamp")
+        span(class="current-rate") currently 25USD 
+        span(class="timestamp") rate timestamped 20:13 14 May 2013
+    div#dev-callout
+      h3 Ready to build a better tomorrow?
+      ul
+        li 
+          a(href="https://ripple.com/wiki/Ripple_Client") Build your own ripple client
+        li
+          a(href="http://ripple.com/wiki") Build ripple libraries
+        li 
+          a(href="https://ripple.com/wiki/Gateway_Integration_Manual") Integrate with a gateway
+        li 
+          a(href="http://ripple.com/jobs")  submit an idea
+      p(class="bottom-links")
+        a(href="http://ripple.com/jobs")  work with us 
+        |
+        a(href="http://ripple.com/wiki")  wiki 
+        |
+        a(href="https://github.com/rippleFoundation")  github 
+

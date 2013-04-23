@@ -3,6 +3,13 @@
 //variables
 @sans: 'OpenSansLight', 'HelveticaNeue-Light', Helvetica, Arial, sans-serif;
 @lightyellow: lighten(@yellow,40%);
+@lightgreen: #ABC655;
+
+.bold(@size:100%){
+	font-family: 'OpenSansBold', 'HelveticaNeue-Bold', Helvetica, Arial, sans-serif;
+	font-weight:bold;
+	font-size: @size;
+}
 
 //start giveaway styling
 .giveaway{
@@ -113,7 +120,7 @@ header{
 		}
 	}
 
-	ul{
+	ul.walkthrough-list{
 		margin:0;
 		padding:0;
 		width:100%;
@@ -192,6 +199,60 @@ header{
 		}
 		.btn{
 			min-width: 200px;
+		}
+	}
+
+	//start congrats page
+
+	#congrats{
+		padding:0;
+		h1{
+			border:0;
+			text-align: center;
+			span.tick{
+				background-image: url(../../img/ripple-giveaway-sprite.png);
+				background-position: -870px 0px;
+				background-repeat:no-repeat;
+				width:130px;
+				height:130px;
+				position: static;
+				display:block;
+				right:auto;
+				margin:0 auto;
+			}
+		}
+
+		h2{
+			text-align: center;
+			.bold(48px);
+			padding:10px 0;
+			background-color: @lightgreen;
+			margin-bottom: 5px;
+		}
+
+		.rate-timestamp{
+			text-align: center;
+			color: #ccc;
+		}
+
+		h3{
+			font-family: @sans;
+			font-size: 26px;
+		}
+
+		#dev-callout{
+			width:400px;
+			margin: 0 auto;
+			li{
+				padding:5px 0;
+			}
+			a{
+				font-family: @sans;
+			}
+		}
+		.bottom-links{
+			position: absolute;
+			bottom:0;
 		}
 	}
 }
