@@ -21,11 +21,9 @@ ReceiveTab.prototype.angular = function (module) {
     $scope.redemption_success = false;
     $scope.redeem_code = function () {
       $("#redemption_status").addClass("literal throbber").html("");
-      console.log("ADDRESS:", $scope.address);
-      console.log("CODE:", $scope.redemption_code);
       $.ajax({
           type: 'POST',
-          url: 'http://127.0.0.1:8000/json',
+          url: 'https://ripple.com/claim/json',
           data: {
             code: $scope.redemption_code,
             ripple_address: $scope.address,
@@ -33,7 +31,6 @@ ReceiveTab.prototype.angular = function (module) {
             last_name: "!!!RIPPLE.COM!!!"
           }
       }).done(function(data) {
-          console.log(data);
           if (data.error == "success") {
             $scope.redemption_code = "";
             $("#redemption_status").removeClass().css("color","green").html("Success!");
