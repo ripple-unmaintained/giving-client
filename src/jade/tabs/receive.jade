@@ -3,10 +3,30 @@ section.single.content(ng-controller="ReceiveCtrl")
   hr
   .address
     span#receive-address(ng-bind="address")
-  .qr#qr-code
   p.literal(ng-show="!copy_supported")
     | Tip:&nbsp;
     a.select(rp-select-el="receive-address") Select
     |  and copy using Ctrl+C.
   form(ng-show="copy_supported")
     button.btn.btn-success Copy Address
+  p
+    a(ng-click="show_qr=true", ng-hide="show_qr") Show QR code
+    a(ng-click="show_qr=false", ng-show="show_qr") Hide QR code
+  div(ng-show="show_qr")
+    .qr#qr-code
+  hr
+  p Have a code? You can enter it here for your free ripples.
+  form(name="redeemForm", id="redeemForm", ng-submit='redeem_code()')
+    input#redemption_code(
+      name='redemption_code', type='text'
+      ng-model='redemption_code', required
+      placeholder='Code')
+    div(style="display:none;")
+      input#address(
+        name='address', type='text'
+        ng-model='address', required
+        placeholder='Address')
+    br
+    button.btn.btn-success.submit(type='submit', ng-disabled='redeemForm.$invalid') Submit
+    div#redemption_status
+

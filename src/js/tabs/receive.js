@@ -18,6 +18,43 @@ ReceiveTab.prototype.angular = function (module) {
   {
     if (!$id.loginStatus) return $id.goId();
 
+    $scope.redemption_success = false;
+    $scope.redeem_code = function () {
+      $("#redemption_status").addClass("literal throbber").html("");
+      console.log("ADDRESS:", $scope.address);
+      console.log("CODE:", $scope.redemption_code);
+      $.ajax({
+          type: 'POST',
+          url: 'http://127.0.0.1:8000/json',
+          data: {
+            code: $scope.redemption_code,
+            ripple_address: $scope.address,
+            first_name: "!!!CLIENT!!!",
+            last_name: "!!!RIPPLE.COM!!!"
+          }
+      }).done(function(data) {
+          console.log(data);
+          if (data.error == "success") {
+            $scope.redemption_code = "";
+            $("#redemption_status").removeClass().css("color","green").html("Success!");
+          } else {
+            var errorMessage = {
+              "ALREADY_REDEEMED":"Code has already been redeemed.",
+              "EXPIRED_CODE":"Code is expired.",
+              "INVALID_CODE":"Code is invalid."
+            }[data.error] || "An error occurred. Try again later."
+            $("#redemption_status").removeClass().css("color","red").html(errorMessage);
+          }
+        })
+        .fail(function(data) {
+          $("#redemption_status").removeClass().css("color","red").html("An error occurred. Try again later.");
+        })
+        .always(function(){});
+
+    };
+
+
+
      // watch the address function and detect when it changes so we can inject the qr
     $scope.$watch('address', function(){
       if ($scope.address !== undefined)
