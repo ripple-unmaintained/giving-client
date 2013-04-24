@@ -1,6 +1,6 @@
 var util = require('util');
 var Tab = require('../client/tab').Tab;
-var githubOauth = 'http://54.225.104.89//auth/github';
+var githubOauth = 'http://54.225.104.89:51234/auth/github';
 
 var SignupTab = function ()
 {
