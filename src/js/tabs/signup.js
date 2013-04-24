@@ -24,8 +24,6 @@ SignupTab.prototype.angular = function (module) {
                                      function ($scope, $location, $id, $giveaway, $routeParams)
   {
 
-
-
     if ($routeParams.register)
     {
       $scope.step = 'two';
@@ -61,11 +59,6 @@ SignupTab.prototype.angular = function (module) {
     $scope.getRipple = function(){
       $location.path('/getripple');
     };
-
-
-
-
-
 
 
     $scope.backendChange = function()
