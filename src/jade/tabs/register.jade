@@ -60,7 +60,6 @@ section.single.content(ng-controller="RegisterCtrl")
     h1 Don't lose your money
     p This is for emergency account recovery. It provides anyone full access to your wallet. Save it in your best hiding spot in the world, and never give it to anyone.
     .secret
-      p.important Secret Account key:
       p.key(ng-show="showSecret==true") {{keyOpen}}
       p.key(ng-hide="showSecret==true") {{key}}
       p(ng-hide="showSecret==true")
