@@ -1,20 +1,20 @@
 section.single.content(ng-controller="RegisterCtrl")
   .mode-form(ng-show='mode=="form"')
-    h1 Create a ripple Wallet
+    h1 Create a Ripple Wallet
     form(name='registerForm', ng-submit='submitForm()')
       label(for='register_username') Create Wallet Name
       input#register_username(
         name='register_username', type='text', ng-model="username", required)
       .horiz
         div
-          label(for='register_password') Create Wallet Passphrase
+          label(for='register_password') Create Wallet Password
           input#register_password(
             name='register_password1', type='password'
             ng-model="password1"
             rp-strong-password, required)
           p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
         div
-          label(for='register_password2') Re-Enter Passphrase
+          label(for='register_password2') Re-Enter Password
           input#register_password2(
             name='register_password2'
             type='password'
