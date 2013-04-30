@@ -37,9 +37,14 @@ SignupTab.prototype.angular = function(module) {
     };
 
     $scope.step_two = function() {
-      $scope.step = 'three';
-      // set cookie info here
+      /*
+      $.post(url, {
 
+      }, function(){
+
+      });
+      */
+      $scope.step = 'three';
     };
 
     $scope.step_three = function() {
