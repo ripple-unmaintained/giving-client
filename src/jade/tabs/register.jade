@@ -16,8 +16,7 @@ section.single.content(ng-controller="RegisterCtrl")
             ng-blur="showPasswordTooltip=false;",
             rp-strong-password, required)
           p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
-          div(ng-show="showPasswordTooltip"
-            style="border:3px dotted magenta; background-color:#09f911; position:absolute; padding:20px; font-size:45pt; font-family:'Comic Sans MS';") Password tool tip here!
+          div#password_tooltip(ng-show="showPasswordTooltip") Password tool tip here!
         div
           label(for='register_password2') Re-Enter Password
           input#register_password2(
