@@ -4,7 +4,8 @@ section.single.content(ng-controller="RegisterCtrl")
     form(name='registerForm', ng-submit='submitForm()')
       label(for='register_username') Create Wallet Name
       input#register_username(
-        name='register_username', type='text', ng-model="username", required)
+        name='register_username', type='text', ng-model="username", required
+        placeholder='Name your wallet something memorable')
       .horiz
         div
           label(for='register_password') Create Wallet Password
