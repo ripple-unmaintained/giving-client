@@ -23,10 +23,12 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     include register
   div.step-login(ng-show="step == 'login'")
     include login
+  div.errors(ng-show="step == 'errors'")
+    h3 Errors Page
+    p {{ errors }}
 
 div.modal.hide.fade
   div.modal-body
     p Hello developers!
   div.modal-footer
     a(href="", class="btn", data-dismiss="modal") Close
-
