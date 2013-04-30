@@ -3,7 +3,7 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
     h1 Earn 500 ripples (XRP)
       span currently 25 USD
     h2 by completing these actions!
-      span exchange rate as of 20:13 14 May 2013
+      span exchange rate as of 8:13pm
     ul(class="walkthrough-list")
       li#code(ng-class="codeClass", ng-click="codeClass='done'")
         a(href="https://github.com/rippleFoundation/", target="_github")
@@ -26,8 +26,8 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
             |Think about our list of
             span.bigger things to build
   div(ng-show="finish", class="claim")
-    p Good job you can claim your XRP.
-    a.btn.btn-info.btn-big(ng-click='congrats()') Claim
+    p Great! Now get your XRP.
+    a.btn.btn-info.btn-big(ng-click='congrats()') Get funded
   div#congrats(ng-show="claim")
     h1 
       span(class="tick") 
@@ -35,7 +35,7 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
     h2 500 XRP
     p(class="rate-timestamp")
         span(class="current-rate") currently 25USD 
-        span(class="timestamp") exchange rate as of 20:13
+        span(class="timestamp") exchange rate as of 8:13pm
     div#dev-callout
       h3 Ready to build a better tomorrow?
       ul
