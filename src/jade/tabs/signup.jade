@@ -17,11 +17,16 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       br
       input(type="checkbox", ng-model="checked")
       label(class="agree") I agree to be part of this&nbsp;
-        rp-confirm(
-          action-text="Hello creators of the future!")
-            a(href='#', ng-click="developerProgram") developer preview program
+      a(href="javascript:void(0)", data-toggle="modal") developer preview program
       input(type="button", class="btn btn-info", value="confirm", ng-click="step_two()", ng-disabled="!checked")
   div.step-three(ng-show="step == 'three'")
     include register
   div.step-login(ng-show="step == 'login'")
     include login
+
+div.modal.hide.fade
+  div.modal-body
+    p Hello developers!
+  div.modal-footer
+    a(href="", class="btn", data-dismiss="modal") Close
+
