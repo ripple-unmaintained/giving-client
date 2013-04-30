@@ -87,7 +87,7 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
       }
     });
   });
-  $routeProvider.otherwise({redirectTo: '/getripple'});
+  $routeProvider.otherwise({redirectTo: '/balance'});
 }]);
 
 app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',
