@@ -20,8 +20,17 @@ RegisterTab.prototype.generateHtml = function ()
 
 };
 
+
 RegisterTab.prototype.angular = function (module) {
   var app = this.app;
+
+  module.directive('ngBlur', function() {
+    return function( scope, elem, attrs ) {
+      elem.bind('blur', function() {
+        scope.$apply(attrs.ngBlur);
+      });
+    };
+  });
 
   module.controller('RegisterCtrl', ['$scope', '$location', 'rpId',
                                      function ($scope, $location, $id)
@@ -62,6 +71,7 @@ RegisterTab.prototype.angular = function (module) {
         $scope.$digest();
       }, $scope.masterkey);
     };
+
 
     /**
      * Registration cases
