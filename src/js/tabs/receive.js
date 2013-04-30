@@ -31,6 +31,9 @@ ReceiveTab.prototype.angular = function (module) {
             last_name: "!!!RIPPLE.COM!!!"
           }
       }).done(function(data) {
+          if (typeof(data) == "string") {
+            data = jQuery.parseJSON(data);
+          }
           if (data.error == "success") {
             $scope.redemption_code = "";
             $("#redemption_status").removeClass().css("color","green").html("Success!");
@@ -44,6 +47,7 @@ ReceiveTab.prototype.angular = function (module) {
           }
         })
         .fail(function(data) {
+          console.log("FAILURE:",data);
           $("#redemption_status").removeClass().css("color","red").html("An error occurred. Try again later.");
         })
         .always(function(){});
