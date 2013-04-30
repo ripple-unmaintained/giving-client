@@ -4,15 +4,19 @@ section.single.content(ng-controller="RegisterCtrl")
     form(name='registerForm', ng-submit='submitForm()')
       label(for='register_username') Create Wallet Name
       input#register_username(
-        name='register_username', type='text', ng-model="username", required)
+        name='register_username', type='text', ng-model="username", required
+        placeholder='Name your wallet something memorable')
       .horiz
         div
           label(for='register_password') Create Wallet Password
           input#register_password(
             name='register_password1', type='password'
-            ng-model="password1"
+            ng-model="password1",
+            ng-click="showPasswordTooltip=true;",
+            ng-blur="showPasswordTooltip=false;",
             rp-strong-password, required)
           p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
+          div#password_tooltip(ng-show="showPasswordTooltip") Password tool tip here!
         div
           label(for='register_password2') Re-Enter Password
           input#register_password2(
