@@ -73,7 +73,7 @@ LoginTab.prototype.angular = function (module) {
 
       $scope.loginForm.login_username.$setViewValue(username);
       $scope.loginForm.login_password.$setViewValue(password);
-
+      console.log("ZERO!");
       setImmediate(function () {
         app.id.login($scope.username, $scope.password, function(backendName, err, success) {
           $scope.ajax_loading = false;
@@ -81,7 +81,7 @@ LoginTab.prototype.angular = function (module) {
             if ($routeParams.tab) {
               $location.path('/'+$routeParams.tab);
             } else {
-              $location.path('/balance');
+              $location.path('/getripple');
             }
           } else {
             $scope.backendMessages.push({'backend':backendName, 'message':err.message});
