@@ -28,7 +28,9 @@ LoginTab.prototype.angular = function (module) {
                                             $location, $id)
   {
     if ($id.loginStatus) {
-      $location.path('/balance');
+      var funded = false; //TODO: API call for our address and github id
+      var defaultDestination = funded ? '/balance' : '/getripple'
+      $location.path(defaultDestination);
       return;
     }
 
@@ -80,7 +82,9 @@ LoginTab.prototype.angular = function (module) {
             if ($routeParams.tab) {
               $location.path('/'+$routeParams.tab);
             } else {
-              $location.path('/getripple');
+              var funded = false; //TODO: API call for our address and github id
+              var defaultDestination = funded ? '/balance' : '/getripple'
+              $location.path(defaultDestination);
             }
           } else {
             $scope.backendMessages.push({'backend':backendName, 'message':err.message});
