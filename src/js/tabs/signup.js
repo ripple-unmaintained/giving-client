@@ -33,7 +33,7 @@ SignupTab.prototype.angular = function(module) {
     }
 
     $scope.oauth = function(provider) {
-      window.location = Options.githubOauth;
+      window.location = Options.giveawayServer + Options.githubOauth;
     };
 
     $scope.step_two = function() {
@@ -45,7 +45,7 @@ SignupTab.prototype.angular = function(module) {
           name: 'Just testing',
           email: 'this@email.com'
         },
-        url: 'http://l:3001/users/' + $routeParams.id,
+        url: Options.giveawayServer + '/users/' + $routeParams.id,
         type: 'PUT',
         success: function(result) {
           console.log(result);

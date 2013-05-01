@@ -14,11 +14,12 @@ var Options = {
     //    "websocket_ssl" : false
   },
   blobvault: "https://blobvault.payward.com",
-  githubOauth: 'http://l:3001/auth/github',
+  giveawayServer: 'http://54.225.104.89:51234',
+  githubOauth: '/auth/github',
 
   // If set, login will persist across sessions (page reload). This is mostly
   // intended for developers, be careful about using this in a real setting.
-  persistent_auth: false,
+  persistent_auth: true,
 
   // Number of transactions each page has in balance tab notifications
   transactions_per_page: 50
