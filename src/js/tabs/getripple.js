@@ -30,6 +30,7 @@ GetRippleTab.prototype.angular = function (module)
 
     $scope.claim = false;
 
+
     $scope.clicked = function(){
 
     };
