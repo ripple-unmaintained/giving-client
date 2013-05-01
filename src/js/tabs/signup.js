@@ -32,26 +32,23 @@ SignupTab.prototype.angular = function(module) {
       $scope.step = 'one';
     }
 
-    $scope.oauth = function(provider) {
+    $scope.oauth = function() {
+      $scope.sending = false;
       window.location = Options.giveawayServer + Options.githubOauth;
     };
 
     $scope.step_two = function() {
       console.log('hi');
       // update confirmation info
-      $.ajax({
-        data: {
+      $.post(Options.giveawayServer + '/users/' + $routeParams.id, {
           register: $routeParams.register,
           name: 'Just testing',
           email: 'this@email.com'
-        },
-        url: Options.giveawayServer + '/users/' + $routeParams.id,
-        type: 'PUT',
-        success: function(result) {
+        }, function(result) {
           console.log(result);
-          $scope.step = 'three';
+          //$scope.step = 'three';
         }
-      });
+      );
     };
 
       $scope.step_three = function() {
