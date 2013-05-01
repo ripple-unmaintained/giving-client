@@ -23,7 +23,6 @@ RegisterTab.prototype.generateHtml = function ()
 
 RegisterTab.prototype.angular = function (module) {
   var app = this.app;
-
   module.directive('ngBlur', function() {
     return function( scope, elem, attrs ) {
       elem.bind('blur', function() {
@@ -36,7 +35,9 @@ RegisterTab.prototype.angular = function (module) {
                                      function ($scope, $location, $id)
   {
     if ($id.loginStatus) {
-      $location.path('/balance');
+      var funded = false; //TODO: API call for our address and github id
+      var defaultDestination = funded ? '/balance' : '/getripple'
+      $location.path(defaultDestination);
       return;
     }
 
@@ -66,7 +67,6 @@ RegisterTab.prototype.angular = function (module) {
         $scope.password = new Array($scope.password1.length+1).join("*");
         $scope.keyOpen = key;
         $scope.key = $scope.keyOpen[0] + new Array($scope.keyOpen.length).join("*");
-
         $scope.mode = 'welcome';
         $scope.$digest();
       }, $scope.masterkey);
@@ -117,7 +117,6 @@ RegisterTab.prototype.angular = function (module) {
     {
       $scope.mode = 'form';
       $scope.reset();
-
       $location.path('/balance');
     };
 

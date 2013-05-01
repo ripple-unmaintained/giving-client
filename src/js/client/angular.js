@@ -87,7 +87,10 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
       }
     });
   });
-  $routeProvider.otherwise({redirectTo: '/balance'});
+  var funded = false; //TODO: API call for our address and github id
+  var defaultDestination = funded? '/balance' : '/getripple'
+  $routeProvider.otherwise({redirectTo: defaultDestination});
+  
 }]);
 
 app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',

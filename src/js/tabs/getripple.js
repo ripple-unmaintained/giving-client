@@ -19,6 +19,7 @@ GetRippleTab.prototype.generateHtml = function ()
   return require('../../jade/tabs/getripple.jade')();
 };
 
+
 GetRippleTab.prototype.angular = function (module)
 {
   var self = this,
@@ -27,7 +28,7 @@ GetRippleTab.prototype.angular = function (module)
   module.controller('GetRippleCtrl', ['$scope', '$routeParams', '$rootScope', 'rpId',
                                  function ($scope, $routeParams, $rootScope, $id)
   {
-
+    if (!$id.loginStatus) return $id.goId(); //Don't see this page until you log in.
 
     $scope.clickCode = function() {
       $rootScope.codeClass='done';
