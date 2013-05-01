@@ -18,7 +18,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       input(type="checkbox", ng-model="checked")
       label(class="agree") I agree to be part of this&nbsp;
         a(href="javascript:void(0)", data-toggle="modal", role="button", data-target="#devModal", data-backdrop="false") developer XRP giveaway
-      input(type="button", class="btn btn-info", value="confirm", ng-disabled="!checked")
+      input(type="submit", class="btn btn-info", value="confirm", ng-disabled="!checked")
 
   div.step-three(ng-show="step == 'three'")
     include register
@@ -32,16 +32,16 @@ div#devModal.modal.hide.fade(aria-hidden="true")
   div.modal-body
     h2 Welcome to the Developer XRP giveaway
     p Hello developers!
-    p Welcome to the movement to give control of money back to the people. Our goals for this Developer XRP Giveaway is to start introducing the Ripple protocol to developers all around the world, contribute resources to the community of developers building virtual currency payment tools and get feedback on how we can make Ripple more accessible to developers and non-devs alike. 
+    p Welcome to the movement to give control of money back to the people. Our goals for this Developer XRP Giveaway is to start introducing the Ripple protocol to developers all around the world, contribute resources to the community of developers building virtual currency payment tools and get feedback on how we can make Ripple more accessible to developers and non-devs alike.
     p As part of the developer giveaway, we will be:
     ul
       li giving developers early access to the network
       li giving developers ripples to use and test within the system
-      li asking developers in our developer program to register their email with us so we can send updates about our platform 
+      li asking developers in our developer program to register their email with us so we can send updates about our platform
       li collecting data about user engagement in our Ripple client via analytics tools so that we can use the feedback to improve usability of our client
       li listening to all the feedback we get on how to make the Ripple network awesome
 
-    p And of course, the early access developer giveaway is subject to the standard 
+    p And of course, the early access developer giveaway is subject to the standard
       a(href="https://ripple.com/terms/", target="_blank") terms of service.
       | If you want to chat with us, you can find us on IRC (#ripple on freenode).  Thank you!
 
