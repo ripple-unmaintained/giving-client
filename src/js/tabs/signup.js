@@ -49,9 +49,10 @@ SignupTab.prototype.angular = function(module) {
         type: 'PUT',
         success: function(result) {
           console.log(result);
-          $scope.step = 'three';
         }
       });
+
+      $scope.step = 'three';
     };
 
       $scope.step_three = function() {
