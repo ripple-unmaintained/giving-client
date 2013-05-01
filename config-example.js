@@ -14,7 +14,7 @@ var Options = {
     //    "websocket_ssl" : false
   },
   blobvault: "https://blobvault.payward.com",
-  giveawayServer: 'http://http://54.225.104.89:51234',
+  giveawayServer: 'http://54.225.104.89:51234',
   githubOauth: '/auth/github',
 
   // If set, login will persist across sessions (page reload). This is mostly
