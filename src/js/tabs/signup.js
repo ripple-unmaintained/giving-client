@@ -37,26 +37,38 @@ SignupTab.prototype.angular = function(module) {
     };
 
     $scope.step_two = function() {
-      $scope.step = 'three';
-      // set cookie info here
-
+      console.log('hi');
+      // update confirmation info
+      $.ajax({
+        data: {
+          register: $routeParams.register,
+          name: 'Just testing',
+          email: 'this@email.com'
+        },
+        url: 'http://l:3001/users/' + $routeParams.id,
+        type: 'PUT',
+        success: function(result) {
+          console.log(result);
+          $scope.step = 'three';
+        }
+      });
     };
 
-    $scope.step_three = function() {
-      $scope.mode = 'welcome';
-    };
+      $scope.step_three = function() {
+        $scope.mode = 'welcome';
+      };
 
-    // hook into popup service
-    $scope.developerProgram = function() {
+      // hook into popup service
+      $scope.developerProgram = function() {
 
-    };
+      };
 
-    $scope.getRipple = function() {
-      $location.path('/getripple');
-    };
+      $scope.getRipple = function() {
+        $location.path('/getripple');
+      };
 
-  }]);
-};
+    }]);
+  };
 
 
-module.exports = SignupTab;
+  module.exports = SignupTab;
