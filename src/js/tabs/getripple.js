@@ -24,24 +24,42 @@ GetRippleTab.prototype.angular = function (module)
   var self = this,
       app = this.app;
 
-  module.controller('GetRippleCtrl', ['$scope', '$routeParams', 'rpId',
-                                 function ($scope, $routeParams, $id)
+  module.controller('GetRippleCtrl', ['$scope', '$routeParams', '$rootScope', 'rpId',
+                                 function ($scope, $routeParams, $rootScope, $id)
   {
 
-    $scope.claim = false;
 
+    $scope.clickCode = function() {
+      $rootScope.codeClass='done';
+      areWeDoneYet();
+    }
+    $scope.clickWiki = function() {
+      $rootScope.wikiClass='done';
+      areWeDoneYet();
+    }
+    $scope.clickVideo = function() {
+      $rootScope.videoClass='done';
+      areWeDoneYet();
+    }
+    $scope.clickList = function() {
+      $rootScope.listClass='done';
+      areWeDoneYet();
+    }
 
-    $scope.clicked = function(){
+    function areWeDoneYet() {
+      $scope.finish = (
+        !($rootScope.claim) &&
+        $rootScope.codeClass=='done' && 
+        $rootScope.wikiClass=='done' && 
+        $rootScope.videoClass=='done' &&
+        $rootScope.listClass=='done');
+    }
+    areWeDoneYet();
 
-    };
-
-    $scope.done = function(){
-      $scope.finish = true;
-    };
 
     $scope.congrats = function(){
-      $scope.finish = false;
-      $scope.claim = true;
+      $rootScope.claim = true;
+      areWeDoneYet();
     };
 
   }]);
