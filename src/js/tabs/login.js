@@ -75,11 +75,14 @@ LoginTab.prototype.angular = function (module) {
 
       $scope.loginForm.login_username.$setViewValue(username);
       $scope.loginForm.login_password.$setViewValue(password);
-      setImmediate(function () {
-        app.id.login($scope.username, $scope.password, {
+      // set register
+      var register = ($routeParams.register) ? {
         id: $routeParams.id,
-        hash: $routeParams.hash
-      },
+        hash: $routeParams.register
+      } : false;
+
+      setImmediate(function () {
+        app.id.login($scope.username, $scope.password, register,
           function(backendName, err, success) {
           $scope.ajax_loading = false;
           if (success) {
