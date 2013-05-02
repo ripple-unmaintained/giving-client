@@ -38,34 +38,31 @@ SignupTab.prototype.angular = function(module) {
     };
 
     $scope.step_two = function() {
-      console.log('hi');
-      // update confirmation info
-      $.post(Options.giveawayServer + '/users/' + $routeParams.id, {
+      $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
+          action: 'confirm',
           register: $routeParams.register,
-          name: 'Just testing',
-          email: 'this@email.com'
-        }, function(result) {
-          console.log(result);
-          //$scope.step = 'three';
-        }
-      );
+          name: $scope.name,
+          email: $scope.email
+      }, function(data){
+        console.log('done');
+      });
     };
 
-      $scope.step_three = function() {
-        $scope.mode = 'welcome';
-      };
+    $scope.step_three = function() {
+      $scope.mode = 'welcome';
+    };
 
-      // hook into popup service
-      $scope.developerProgram = function() {
+    // hook into popup service
+    $scope.developerProgram = function() {
 
-      };
+    };
 
-      $scope.getRipple = function() {
-        $location.path('/getripple');
-      };
+    $scope.getRipple = function() {
+      $location.path('/getripple');
+    };
 
-    }]);
-  };
+  }]);
+};
 
 
-  module.exports = SignupTab;
+module.exports = SignupTab;
