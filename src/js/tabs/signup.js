@@ -25,6 +25,13 @@ SignupTab.prototype.angular = function(module) {
       $scope.step = 'errors';
       $scope.errors = $routeParams.errors;
     } else if ($routeParams.register) {
+      // if already confirmed redirect to register page
+      if ($routeParams.error == 'already_confirmed')
+        $location.path('/register');
+      // if an address is already associated redirect to login
+      else if ($routeParams.errors == 'address_associated')
+        $location.path('/login');
+
       $scope.step = 'two';
       $scope.name = $routeParams.name;
       $scope.email = $routeParams.email;
@@ -44,7 +51,7 @@ SignupTab.prototype.angular = function(module) {
           name: $scope.name,
           email: $scope.email
       }, function(data){
-        console.log('done');
+        $scope.step = 'three';
       });
     };
 

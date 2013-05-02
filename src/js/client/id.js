@@ -2,7 +2,8 @@ var blob = require('./blob').BlobObj,
     events = require('events'),
     util = require('util'),
     Base58Utils = require('../util/base58'),
-    RippleAddress = require('../util/types').RippleAddress;
+    RippleAddress = require('../util/types').RippleAddress,
+    registered = false;
 
 /**
  * Identity manager
@@ -141,6 +142,30 @@ Id.prototype.setPassword = function (password)
   this.app.$scope.userCredentials.password = password;
 };
 
+Id.prototype.setRegisterHash = function (register)
+{
+  this.giveaway_register = register;
+  this.app.$scope.userCredentials.giveaway_register = register;
+  this.emit('giveawayregister', {giveaway_hash: register});
+};
+
+// do a post here to associate ripple giveaway address to id
+Id.prototype.giveawayAddress = function(register, address)
+{
+  if (registered)
+    return false;
+
+  var self = this;
+  $.post(Options.giveawayServer + '/user/' + register.id, {
+      action: 'address',
+      register: register.hash,
+      address: address
+  }, function(data){
+    registered = true;
+    self.emit('giveawayaddress', data);
+  });
+};
+
 Id.prototype.setAccount = function (accId, accKey)
 {
   if (this.account !== null) {
@@ -169,7 +194,7 @@ Id.prototype.storeLogin = function (username, password)
   }
 }
 
-Id.prototype.register = function (username, password, callback, masterkey)
+Id.prototype.register = function (username, password, register, callback, masterkey)
 {
   var self = this;
 
@@ -199,19 +224,24 @@ Id.prototype.register = function (username, password, callback, masterkey)
 
   // Add user to blob
   blob.set(self.blobBackends, username.toLowerCase(), password, data, function () {
-    self.app.$scope.userBlob = data;
-    self.setUsername(username);
-    self.setPassword(password);
-    self.setAccount(data.data.account_id, data.data.master_seed);
-    self.storeLogin(username, password);
-    self.loginStatus = true;
-    self.emit('blobupdate');
-    store.set('ripple_known', true);
-    callback(data.data.master_seed);
+    self.giveawayAddress(register, data.data.account_id);
+    self.on('giveawayaddress', function(res){
+      /* TODO: check for address_exists in res.errors and redirect accordingly */
+      self.app.$scope.userBlob = data;
+      self.setUsername(username);
+      self.setRegisterHash(register);
+      self.setPassword(password);
+      self.setAccount(data.data.account_id, data.data.master_seed);
+      self.storeLogin(username, password);
+      self.loginStatus = true;
+      self.emit('blobupdate');
+      store.set('ripple_known', true);
+      callback(data.data.master_seed);
+    });
   });
 };
 
-Id.prototype.login = function (username,password,callback)
+Id.prototype.login = function (username,password, register, callback)
 {
   var self = this;
 
@@ -236,6 +266,9 @@ Id.prototype.login = function (username,password,callback)
     };
     self.setUsername(username);
     self.setPassword(password);
+    // if register hash exists
+    if (register)
+      self.setRegisterHash(register);
     self.setAccount(blob.data.account_id, blob.data.master_seed);
     self.storeLogin(username, password);
     self.loginStatus = true;

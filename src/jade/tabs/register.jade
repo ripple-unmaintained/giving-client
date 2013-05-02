@@ -4,7 +4,7 @@ section.single.content(ng-controller="RegisterCtrl")
     form(name='registerForm', ng-submit='submitForm()')
       label(for='register_username') Create Wallet Name
       input#register_username(
-        name='register_username', type='text', ng-model="username", 
+        name='register_username', type='text', ng-model="username",
         ng-mousedown="showWalletTooltip=true;",
         ng-blur="showWalletTooltip=false;",
         required)
@@ -19,7 +19,7 @@ section.single.content(ng-controller="RegisterCtrl")
             ng-blur="showPasswordTooltip=false;",
             rp-strong-password, required)
           p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
-          
+
         div
           label(for='register_password2') Re-Enter Password
           input#register_password2(
