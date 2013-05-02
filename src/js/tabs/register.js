@@ -120,6 +120,7 @@ RegisterTab.prototype.angular = function (module) {
     // workaround to preserve get query string
     $scope.open_wallet = function(){
       $location.path('/login');
+      return false;
     };
 
     $scope.goToBalance = function()
