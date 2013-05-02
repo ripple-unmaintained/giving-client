@@ -21,7 +21,7 @@ SignupTab.prototype.angular = function(module) {
 
   function($scope, $location, $id, $giveaway, $routeParams) {
     // set errors
-    $scope.errors = $routeParams.errors.split(',');
+    $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
     // handle register
     if (_.contains($scope.errors, 'cutoff')) {
       $scope.step = 'errors';
@@ -56,15 +56,6 @@ SignupTab.prototype.angular = function(module) {
 
     $scope.step_three = function() {
       $scope.mode = 'welcome';
-    };
-
-    // hook into popup service
-    $scope.developerProgram = function() {
-
-    };
-
-    $scope.getRipple = function() {
-      $location.path('/getripple');
     };
 
   }]);
