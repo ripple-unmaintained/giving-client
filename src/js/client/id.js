@@ -151,6 +151,12 @@ Id.prototype.setPassword = function (password)
   this.app.$scope.userCredentials.password = password;
 };
 
+Id.prototype.setGiveaway = function (register)
+{
+  this.giveaway_register = register;
+  this.app.$scope.userCredentials.giveaway_register = register;
+};
+
 // do a post here to associate ripple giveaway address to id
 Id.prototype.giveawayAddress = function(register, address)
 {
@@ -233,6 +239,7 @@ Id.prototype.register = function (username, password, register, callback, master
       self.app.$scope.userBlob = data;
       self.setUsername(username);
       self.setPassword(password);
+      self.setGiveaway(register);
       self.setAccount(data.data.account_id, data.data.master_seed);
       self.storeLogin(username, password);
       self.loginStatus = true;
@@ -271,6 +278,7 @@ Id.prototype.login = function (username,password, register, callback)
       };
       self.setUsername(username);
       self.setPassword(password);
+      self.setGiveaway(blob.data.giveaway_register);
       self.setAccount(blob.data.account_id, blob.data.master_seed);
       self.storeLogin(username, password);
       self.loginStatus = true;
