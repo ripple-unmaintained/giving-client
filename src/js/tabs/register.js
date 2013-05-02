@@ -117,6 +117,11 @@ RegisterTab.prototype.angular = function (module) {
       });
     };
 
+    // workaround to preserve get query string
+    $scope.open_wallet = function(){
+      $location.path('/login');
+    };
+
     $scope.goToBalance = function()
     {
       $scope.mode = 'form';
