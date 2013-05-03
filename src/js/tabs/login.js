@@ -27,6 +27,10 @@ LoginTab.prototype.angular = function (module) {
                                   function ($scope, $element, $routeParams,
                                             $location, $id)
   {
+    //  if register hash is empty then redirect to signup
+    if ( ! $routeParams.register)
+      $location.path('/signup');
+
     if ($id.loginStatus) {
       var funded = false; //TODO: API call for our address and github id
       var defaultDestination = funded ? '/balance' : '/getripple'
