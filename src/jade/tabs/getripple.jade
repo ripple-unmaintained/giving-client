@@ -1,56 +1,58 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
-  div.padding(ng-hide="claim")
-    h1 Earn 500 ripples (XRP)
-      span currently 25 USD
-    h2 by completing these actions!
-      span exchange rate as of 8:13pm
-    ul(class="walkthrough-list")
-      li#code(ng-class="codeClass", ng-click="clickState('code')")
-        a(href="https://github.com/rippleFoundation/", target="_code")
-          div.text
-            |Follow us on
-            span.bigger Github
-        li#wiki(ng-class="wikiClass", ng-click="clickState('wiki')")
-          a(href="https://ripple.com/wiki", target="_wiki")
+  div(ng-hide="funded")
+    div.padding(ng-hide="claim")
+      h1 Earn {{ payout }} ripples (XRP)
+        span currently 25 USD
+      h2 by completing these actions!
+        span exchange rate as of 8:13pm
+      ul(class="walkthrough-list")
+        li#code(ng-class="codeClass", ng-click="clickState('code')")
+          a(href="https://github.com/rippleFoundation/", target="_code")
             div.text
-              |Read our
-              span.bigger wiki
-      li#video(ng-class="videoClass", ng-click="clickState('video')")
-        a(href="http://vimeo.com/user17625429", target="_video")
-          div.text
-            |Watch our
-            span.bigger videos
-      li#list(ng-class="tutorialClass", ng-click="clickState('tutorial')")
-        a(href="https://ripple.com/wiki/Development_ideas", target="_tutorial")
-          div.text
-            |Think about our list of
-            span.bigger things to build
-  div(ng-show="finish", class="claim")
-    p Great! Now get your XRP.
-    a.btn.btn-info.btn-big(ng-click='congrats()') Get funded
-  div#congrats(ng-show="claim")
-    h1
-      span(class="tick")
-      |Congratulations! You have earned
-    h2 500 XRP
-    p(class="rate-timestamp")
-        span(class="current-rate") currently 25 USD
-        span(class="timestamp") exchange rate as of 8:14pm
-    div#dev-callout
-      h3 Ready to build a better tomorrow?
-      ul
-        li
-          a(href="https://ripple.com/wiki/Ripple_Client", target="_blank") Build your own ripple client
-        li
-          a(href="https://ripple.com/wiki/Development_ideas", target="_blank") Build ripple libraries
-        li
-          a(href="https://ripple.com/wiki/Development_ideas", target="_blank") Build a Reddit, Twitter or WP tip jar
-        li
-          a(href="https://ripple.com/wiki/Development_ideas", target="_blank")  Submit an idea
-      p(class="bottom-links")
-        a(href="http://ripple.com/jobs" , target="_blank")  work with us
-        |
-        a(href="http://ripple.com/wiki" , target="_blank")  wiki
-        |
-        a(href="https://github.com/rippleFoundation" , target="_blank")  github
-
+              |Follow us on
+              span.bigger Github
+          li#wiki(ng-class="wikiClass", ng-click="clickState('wiki')")
+            a(href="https://ripple.com/wiki", target="_wiki")
+              div.text
+                |Read our
+                span.bigger wiki
+        li#video(ng-class="videoClass", ng-click="clickState('video')")
+          a(href="http://vimeo.com/user17625429", target="_video")
+            div.text
+              |Watch our
+              span.bigger videos
+        li#list(ng-class="tutorialsClass", ng-click="clickState('tutorials')")
+          a(href="https://ripple.com/wiki/Development_ideas", target="_tutorials")
+            div.text
+              |Think about our list of
+              span.bigger things to build
+    div(ng-show="finish", class="claim")
+      p Great! Now get your XRP.
+      a.btn.btn-info.btn-big(ng-click='congrats()') Get funded
+    div#congrats(ng-show="claim")
+      h1
+        span(class="tick")
+        |Congratulations! You have earned
+      h2 {{ payout }} XRP
+      p(class="rate-timestamp")
+          span(class="current-rate") currently 25 USD
+          span(class="timestamp") exchange rate as of 8:14pm
+      div#dev-callout
+        h3 Ready to build a better tomorrow?
+        ul
+          li
+            a(href="https://ripple.com/wiki/Ripple_Client", target="_blank") Build your own ripple client
+          li
+            a(href="https://ripple.com/wiki/Development_ideas", target="_blank") Build ripple libraries
+          li
+            a(href="https://ripple.com/wiki/Development_ideas", target="_blank") Build a Reddit, Twitter or WP tip jar
+          li
+            a(href="https://ripple.com/wiki/Development_ideas", target="_blank")  Submit an idea
+        p(class="bottom-links")
+          a(href="http://ripple.com/jobs" , target="_blank")  work with us
+          |
+          a(href="http://ripple.com/wiki" , target="_blank")  wiki
+          |
+          a(href="https://github.com/rippleFoundation" , target="_blank")  github
+  div(ng-show="funded")
+    h2 You funded already!
