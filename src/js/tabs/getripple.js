@@ -43,7 +43,6 @@ GetRippleTab.prototype.angular = function(module) {
         $scope.register = $rootScope.userBlob.data.giveaway_register;
         // if state hasn't been updated
         if (!stateUpdated) {
-          console.log(Options.giveawayServer + '/user/state/' + $scope.register.id);
           var total = 0;
           // fetch state determined by user id
           $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, function(user) {
