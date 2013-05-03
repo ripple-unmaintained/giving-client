@@ -4,6 +4,7 @@
 @sans: 'OpenSansLight', 'HelveticaNeue-Light', Helvetica, Arial, sans-serif;
 @lightyellow: lighten(@yellow,40%);
 @lightgreen: #ABC655;
+@rippleblue:#346AA9;
 
 .bold(@size:100%){
 	font-family: 'OpenSansBold', 'HelveticaNeue-Bold', Helvetica, Arial, sans-serif;
@@ -22,6 +23,10 @@
 			padding-top: 25px;
 			padding-bottom: 0;
 			margin-bottom: 15px;
+			&.too-new{
+				font-size:30px;
+				text-align: left;
+			}
 		}
 
 		h2{
@@ -344,5 +349,53 @@ header{
 	}
 	.modal-footer{
 		padding:5px 15px 5px;
+	}
+}
+
+
+
+//mailchimp form
+#mc-embedded-subscribe-form{
+	span{
+		display:inline;
+	}
+
+	ul{
+		overflow:hidden;
+		margin:0;
+		padding-left:15px;
+	}
+
+	li{
+		list-style: none;
+	}
+
+	input[type="radio"]{
+		float:left;
+		margin-right: 5px;
+	}
+
+	label{
+		line-height: 1em;
+		margin-top:15px;
+	}
+
+	input[type="email"]{
+		width:50%;
+	}
+
+	h2{
+		margin:0;
+		font-size:22px;
+		color: @rippleblue ;
+	}
+
+	h3{
+		font-size: 18px;
+		margin:0;
+	}
+
+	.asterisk{
+		color:@orange;
 	}
 }
