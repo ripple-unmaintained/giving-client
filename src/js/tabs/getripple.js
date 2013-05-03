@@ -118,14 +118,14 @@ GetRippleTab.prototype.angular = function(module) {
     loadOffers();
 
     function currentTime() {
-      var currentdate = new Date(); 
+      var currentdate = new Date();
       var hour = currentdate.getHours();
       var meridian = (hour >= 12 ? "pm" : "am");
       if (hour == 0) {hour = 12;}
       else if (hour > 12) { hour -= 12;}
       return hour + ":" + currentdate.getMinutes() + meridian;
     }
-    
+
     var ask, bid, unrounded;
     $scope.$watch('book.asks', function (asks) {
       if (!(asks.length)) return;
@@ -144,28 +144,6 @@ GetRippleTab.prototype.angular = function(module) {
       $scope.usd_equivalent=(Math.round(unrounded*100)/100).toFixed(2);
       $scope.updated_time = currentTime();
     }, true);
-
-
-
-/*
-    $scope.clickCode = function() {
-      $rootScope.codeClass='done';
-      areWeDoneYet();
-    }
-    $scope.clickWiki = function() {
-      $rootScope.wikiClass='done';
-      areWeDoneYet();
-    }
-    $scope.clickVideo = function() {
-      $rootScope.videoClass='done';
-      areWeDoneYet();
-    }
-    $scope.clickList = function() {
-      $rootScope.listClass='done';
-      areWeDoneYet();
-    }
-*/
-
 
 
     // do funding
