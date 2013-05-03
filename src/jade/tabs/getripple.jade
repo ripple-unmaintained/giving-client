@@ -1,9 +1,9 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
   div.padding(ng-hide="claim")
-    h1 Earn 500 ripples (XRP)
-      span currently 25 USD
+    h1 Earn {{bounty}} ripples (XRP)
+      span(ng-show="usd_equivalent") currently {{usd_equivalent}} USD
     h2 by completing these actions!
-      span exchange rate as of 8:13pm
+      span(ng-show="updated_time") exchange rate as of {{updated_time}}
     ul(class="walkthrough-list")
       li#code(ng-class="codeClass", ng-click="clickCode()")
         a(href="https://github.com/rippleFoundation/", target="_github")
@@ -32,10 +32,10 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
     h1 
       span(class="tick") 
       |Congratulations! You have earned
-    h2 500 XRP
-    p(class="rate-timestamp")
-        span(class="current-rate") currently 25 USD 
-        span(class="timestamp") exchange rate as of 8:14pm
+    h2 {{bounty}} XRP
+    p(class="rate-timestamp", ng-show="usd_equivalent && updated_time")
+        span(class="current-rate") currently {{usd_equivalent}} USD 
+        span(class="timestamp") as of {{updated_time}}
     div#dev-callout
       h3 Ready to build a better tomorrow?
       ul
