@@ -32,7 +32,7 @@ module.factory('rpId', ['$location', '$route', '$routeParams',
         $location.search('tab', tab);
       }
       if (this.isReturning()) {
-        $location.path('/login');
+        $location.path('/signup');
       } else {
         $location.path('/signup');
       }

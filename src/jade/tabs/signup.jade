@@ -1,9 +1,9 @@
 section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
   div.step-one(ng-show="step == 'one'")
-    h1 Money is about to go opensouce
+    h1 Money is about to go open souce
     h2 To get started, authenticate with github
     img(src="img/octocat.jpg", width="168px")
-    input(type="button", class="btn btn-info", value="git started", ng-click="oauth('github')")
+    input(type="button", class="btn btn-info", value="git started", ng-click="oauth()", ng-disabled="sending")
     span (only accounts created prior to 30 Apr 2013 are eligible)
     h3 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
@@ -25,8 +25,33 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
   div.step-login(ng-show="step == 'login'")
     include login
   div.errors(ng-show="step == 'errors'")
-    h3 Errors Page
-    p {{ errors }}
+    h1.too-new Your github account is too new to qualify for this giveaway.
+    p To participate in this giveaway, your github account must have been created before May 13, 2013. But have no fear! There are more giveaways coming soon. If you would still like to gain early access to the Ripple network, please let us know some information so that we can get you to the right place.
+
+    form(action="http://ripple.us4.list-manage.com/subscribe/post?u=245dbc1c47849f034390dc5bf&amp;id=909cceb341",method="post",id="mc-embedded-subscribe-form",name="mc-embedded-subscribe-form",class="validate",target="_blank")
+      h2  Subscribe to our mailing list
+      div.indicates-required
+        span.asterisk *
+        |indicates required
+      div.mc-field-group
+        label(for="mce-EMAIL") Email Address
+          span.asterisk *
+        input(type="email", value="", name="EMAIL", class="required email", id="mce-EMAIL")
+      div.mc-field-group.input-group
+        h2 I wanted to join the XRP giveaway but  
+          span.asterisk *
+        ul
+          li
+            input(type="radio", value="I am a developer and my github account is too new.", name="DEV1", id="mce-DEV1-0")
+            label(for="mce-DEV1-0") I am a developer and my github account is too new.
+          li
+            input(type="radio", value="I am not a developer so I just made a github account to participate in the giveaway.", name="DEV1", id="mce-DEV1-1")
+            label(for="mce-DEV1-1") I am not a developer so I just made a github account to participate in the giveaway.
+      div#mce-responses.clear
+        div#mce-error-response.response(style="display:none")
+        div#mce-success-response.response(style="display:none")
+      input#mc-embedded-subscribe.btn.btn-info(type="submit", value="Subscribe",name="subscribe")
+
 
 div#devModal.modal.hide.fade(aria-hidden="true")
   div.modal-body

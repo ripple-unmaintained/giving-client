@@ -2,7 +2,8 @@ var blob = require('./blob').BlobObj,
     events = require('events'),
     util = require('util'),
     Base58Utils = require('../util/base58'),
-    RippleAddress = require('../util/types').RippleAddress;
+    RippleAddress = require('../util/types').RippleAddress,
+    registered = false;
 
 /**
  * Identity manager
@@ -70,6 +71,11 @@ Id.normalizePassword = function (password) {
 Id.prototype.init = function ()
 {
   var self = this;
+  // if register params exist create object else make it false
+  var register = (this.app.$scope.$routeParams.register) ? {
+    id: this.app.$scope.$routeParams.id,
+    hash: this.app.$scope.$routeParams.register
+  } : false;
 
   // Initializing sjcl.random doesn't really belong here, but there is no other
   // good place for it yet.
@@ -94,6 +100,10 @@ Id.prototype.init = function ()
 
   this.app.$scope.$watch('userBlob',function(){
     self.emit('blobupdate');
+
+    // if register is available and does not exist in userBlob then save now
+    if ((register) && ( ! self.app.$scope.userBlob.data.register))
+      self.app.$scope.userBlob.data.giveaway_register = register;
 
     if (self.username && self.password) {
       blob.set(self.blobBackends,
@@ -141,6 +151,29 @@ Id.prototype.setPassword = function (password)
   this.app.$scope.userCredentials.password = password;
 };
 
+Id.prototype.setGiveaway = function (register)
+{
+  this.giveaway_register = register;
+  this.app.$scope.userCredentials.giveaway_register = register;
+};
+
+// do a post here to associate ripple giveaway address to id
+Id.prototype.giveawayAddress = function(register, address)
+{
+  if (registered)
+    return false;
+
+  var self = this;
+  $.post(Options.giveawayServer + '/user/' + register.id, {
+      action: 'address',
+      register: register.hash,
+      address: address
+  }, function(data){
+    registered = true;
+    self.emit('giveawayaddress', data);
+  });
+};
+
 Id.prototype.setAccount = function (accId, accKey)
 {
   if (this.account !== null) {
@@ -169,7 +202,7 @@ Id.prototype.storeLogin = function (username, password)
   }
 }
 
-Id.prototype.register = function (username, password, callback, masterkey)
+Id.prototype.register = function (username, password, register, callback, masterkey)
 {
   var self = this;
 
@@ -189,7 +222,8 @@ Id.prototype.register = function (username, password, callback, masterkey)
     data: {
       master_seed: masterkey,
       account_id: (new RippleAddress(masterkey)).getAddress(),
-      contacts: []
+      contacts: [],
+      giveaway_register: register
     },
     meta: {
       created: (new Date()).toJSON(),
@@ -199,19 +233,24 @@ Id.prototype.register = function (username, password, callback, masterkey)
 
   // Add user to blob
   blob.set(self.blobBackends, username.toLowerCase(), password, data, function () {
-    self.app.$scope.userBlob = data;
-    self.setUsername(username);
-    self.setPassword(password);
-    self.setAccount(data.data.account_id, data.data.master_seed);
-    self.storeLogin(username, password);
-    self.loginStatus = true;
-    self.emit('blobupdate');
-    store.set('ripple_known', true);
-    callback(data.data.master_seed);
+    self.giveawayAddress(register, data.data.account_id);
+    self.on('giveawayaddress', function(res){
+      /* TODO: check for address_exists in res.errors and redirect accordingly */
+      self.app.$scope.userBlob = data;
+      self.setUsername(username);
+      self.setPassword(password);
+      self.setGiveaway(register);
+      self.setAccount(data.data.account_id, data.data.master_seed);
+      self.storeLogin(username, password);
+      self.loginStatus = true;
+      self.emit('blobupdate');
+      store.set('ripple_known', true);
+      callback(data.data.master_seed);
+    });
   });
 };
 
-Id.prototype.login = function (username,password,callback)
+Id.prototype.login = function (username,password, register, callback)
 {
   var self = this;
 
@@ -227,22 +266,34 @@ Id.prototype.login = function (username,password,callback)
       return;
     }
 
-    // Ensure certain properties exist
-    $.extend(true, blob, Id.minimumBlob);
+    self.on('giveawayaddress', function(res){
+      /* TODO: check for address_exists in res.errors and redirect accordingly */
 
-    self.app.$scope.userBlob = {
-      data: blob.data,
-      meta: blob.meta
-    };
-    self.setUsername(username);
-    self.setPassword(password);
-    self.setAccount(blob.data.account_id, blob.data.master_seed);
-    self.storeLogin(username, password);
-    self.loginStatus = true;
-    self.emit('blobupdate');
-    store.set('ripple_known', true);
+      // Ensure certain properties exist
+      $.extend(true, blob, Id.minimumBlob);
 
-    callback(backendName, null, !!blob.data.account_id);
+      self.app.$scope.userBlob = {
+        data: blob.data,
+        meta: blob.meta
+      };
+      self.setUsername(username);
+      self.setPassword(password);
+      self.setGiveaway(blob.data.giveaway_register);
+      self.setAccount(blob.data.account_id, blob.data.master_seed);
+      self.storeLogin(username, password);
+      self.loginStatus = true;
+      self.emit('blobupdate');
+      store.set('ripple_known', true);
+
+      callback(backendName, null, !!blob.data.account_id);
+    });
+
+    // if register doesn't exist in blob and register has been passed
+    if ((! blob.data.register_hash) && (register))
+      self.giveawayAddress(register, blob.data.account_id);
+    // if not updating register hash then call giveawayaddress to advance login process
+    else
+      self.emit('giveawayaddress', {});
   });
 };
 

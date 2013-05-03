@@ -31,8 +31,8 @@ RegisterTab.prototype.angular = function (module) {
     };
   });
 
-  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId',
-                                     function ($scope, $location, $id)
+  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId', '$routeParams',
+                                     function ($scope, $location, $id, $routeParams)
   {
     if ($id.loginStatus) {
       var funded = false; //TODO: API call for our address and github id
@@ -63,7 +63,11 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.register = function()
     {
-      app.id.register($scope.username, $scope.password1, function(key){
+      app.id.register($scope.username, $scope.password1, {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      },
+        function(key){
         $scope.password = new Array($scope.password1.length+1).join("*");
         $scope.keyOpen = key;
         $scope.key = $scope.keyOpen[0] + new Array($scope.keyOpen.length).join("*");
@@ -95,7 +99,7 @@ RegisterTab.prototype.angular = function (module) {
     {
       var regInProgress;
 
-      app.id.login($scope.username, $scope.password1, function(backendName,error,success){
+      app.id.login($scope.username, $scope.password1, {}, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;
@@ -111,6 +115,12 @@ RegisterTab.prototype.angular = function (module) {
           }
         }
       });
+    };
+
+    // workaround to preserve get query string
+    $scope.open_wallet = function(){
+      $location.path('/login');
+      return false;
     };
 
     $scope.goToBalance = function()

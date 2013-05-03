@@ -20,11 +20,17 @@ SignupTab.prototype.angular = function(module) {
   module.controller('SignupCtrl', ['$scope', '$location', 'rpId', 'rpGiveaway', '$routeParams',
 
   function($scope, $location, $id, $giveaway, $routeParams) {
-
-    if ($routeParams.errors) {
+    // set errors
+    $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
+    // handle register
+    if (_.contains($scope.errors, 'cutoff')) {
       $scope.step = 'errors';
-      $scope.errors = $routeParams.errors;
     } else if ($routeParams.register) {
+      // if already confirmed redirect to register page
+      if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
+      // if an address is already associated redirect to login
+      else if (_.contains($scope.errors, 'address_associated')) $location.path('/login');
+
       $scope.step = 'two';
       $scope.name = $routeParams.name;
       $scope.email = $routeParams.email;
@@ -32,43 +38,30 @@ SignupTab.prototype.angular = function(module) {
       $scope.step = 'one';
     }
 
-    $scope.oauth = function(provider) {
+    $scope.oauth = function() {
+      $scope.sending = false;
       window.location = Options.giveawayServer + Options.githubOauth;
     };
 
     $scope.step_two = function() {
-      console.log('hi');
-      // update confirmation info
-      $.ajax({
-        data: {
-          register: $routeParams.register,
-          name: 'Just testing',
-          email: 'this@email.com'
-        },
-        url: Options.giveawayServer + '/users/' + $routeParams.id,
-        type: 'PUT',
-        success: function(result) {
-          console.log(result);
-          $scope.step = 'three';
-        }
+      $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
+        action: 'confirm',
+        register: $routeParams.register,
+        name: $scope.name,
+        email: $scope.email
+      }, function(data) {
+        $scope.step = 'three';
+        // necessary to apply variable within a callback
+        $scope.$apply();
       });
     };
 
-      $scope.step_three = function() {
-        $scope.mode = 'welcome';
-      };
+    $scope.step_three = function() {
+      $scope.mode = 'welcome';
+    };
 
-      // hook into popup service
-      $scope.developerProgram = function() {
-
-      };
-
-      $scope.getRipple = function() {
-        $location.path('/getripple');
-      };
-
-    }]);
-  };
+  }]);
+};
 
 
-  module.exports = SignupTab;
+module.exports = SignupTab;
