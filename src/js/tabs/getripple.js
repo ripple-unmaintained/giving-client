@@ -30,12 +30,16 @@ GetRippleTab.prototype.angular = function(module) {
 
     var stateUpdated = false;
     $scope.register = false;
+    $scope.address = false;
     $scope.payout = giveawayFunding;
+
 
     // watch user blob for changes
     $rootScope.$watch('userBlob', function() {
       // if giveaway register is set
       if ($rootScope.userBlob.data.giveaway_register) {
+        // setup variables
+        $scope.address = $rootScope.userBlob.data.account_id;
         $scope.register = $rootScope.userBlob.data.giveaway_register;
         // if state hasn't been updated
         if (!stateUpdated) {
@@ -98,13 +102,19 @@ GetRippleTab.prototype.angular = function(module) {
     $scope.congrats = function() {
       $.post(Options.giveawayServer + '/user/' + $scope.register.id, {
         action: 'fund',
-        register: $scope.register.hash
+        register: $scope.register.hash,
+        address: $scope.address
       }, function(res) {
         $scope.finish = false;
         $scope.claim = true;
         $scope.$apply();
       });
     };
+
+    $scope.$watch('address', function(address){
+      if (address)
+        $scope.congrats();
+    });
 
   }]);
 };
