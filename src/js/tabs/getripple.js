@@ -96,8 +96,14 @@ GetRippleTab.prototype.angular = function(module) {
 
     // do funding
     $scope.congrats = function() {
-      $scope.finish = false;
-      $scope.claim = true;
+      $.post(Options.giveawayServer + '/user/' + $scope.register.id, {
+        action: 'fund',
+        register: $scope.register.hash
+      }, function(res) {
+        $scope.finish = false;
+        $scope.claim = true;
+        $scope.$apply();
+      });
     };
 
   }]);
