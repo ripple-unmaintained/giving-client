@@ -111,11 +111,6 @@ GetRippleTab.prototype.angular = function(module) {
       });
     };
 
-    $scope.$watch('address', function(address){
-      if (address)
-        $scope.congrats();
-    });
-
   }]);
 };
 
