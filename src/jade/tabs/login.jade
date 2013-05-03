@@ -2,12 +2,12 @@ section.single.content(ng-controller="LoginCtrl")
 
   .normal-login(ng-hide="$routeParams.tab")
     h1 Open Wallet
-    p.literal Enter the Name and Passphrase used to encrypt your Wallet below.
+    p.literal Enter the Name and Password used to encrypt your Wallet below.
     form(name='loginForm', ng-submit='submitForm()')
       .inputs
         label(for='login_username') Wallet name
         input#login_username(name='login_username', type='text', ng-model='username', required)
-        label(for='login_password') Passphrase
+        label(for='login_password') Wallet password
         input#login_password(name='login_password', type='password', ng-model='password', required)
       .reminder(ng-show="!hiddenReminder")
         .title
@@ -19,7 +19,7 @@ section.single.content(ng-controller="LoginCtrl")
             br
             | ripple
             strong  cannot&nbsp;
-            | recover your Wallet Name or Passphrase if you forget them!
+            | recover your Wallet Name or Password if you forget them!
           p
             | Write down your Security Key.&nbsp
             a(href="#") Learn how
