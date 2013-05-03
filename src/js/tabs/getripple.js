@@ -45,7 +45,7 @@ GetRippleTab.prototype.angular = function(module) {
 
             // if user has already been funded hide page
             if (user.funded)
-              $scope.funded = true;
+              $scope.claim = true;
 
             // iterate states
             _.each(user.state, function(v, i) {
