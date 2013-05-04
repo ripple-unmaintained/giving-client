@@ -1,4 +1,4 @@
-// returns the raw address after removing any parameters 
+// returns the raw address after removing any parameters
 exports.stripRippleAddress = function (addr)
 {
   if(typeof(addr)=='string')
@@ -11,7 +11,7 @@ exports.stripRippleAddress = function (addr)
   }
   return(addr);
 }
-//returns the destination tag of an address if there is one 
+//returns the destination tag of an address if there is one
 exports.getDestTagFromAddress = function (addr)
 {
   var index=addr.indexOf("?");
@@ -195,3 +195,11 @@ exports.escapeRegExp = function (str)
 {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
+
+/*
+ * Proper local redirect, for getting rid of query strings
+ */
+exports.redirect = function(to)
+{
+  window.location = window.location.pathname + '#/' + to;
+}

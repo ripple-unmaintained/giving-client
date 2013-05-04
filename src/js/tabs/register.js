@@ -1,5 +1,6 @@
 var util = require('util');
-var Tab = require('../client/tab').Tab;
+    Tab = require('../client/tab').Tab,
+    webutil = require('../util/web');
 
 var RegisterTab = function ()
 {
@@ -37,7 +38,7 @@ RegisterTab.prototype.angular = function (module) {
     if ($id.loginStatus) {
       var funded = false; //TODO: API call for our address and github id
       var defaultDestination = funded ? '/balance' : '/getripple'
-      $location.path(defaultDestination);
+      webutil.redirect(defaultDestination);
       return;
     }
 
@@ -116,7 +117,7 @@ RegisterTab.prototype.angular = function (module) {
               $scope.mode = 'masterkeyerror';
               $scope.$digest();
             } else {
-              $location.path('/balance');
+              webutil.redirect('/balance');
             }
           }
         }
