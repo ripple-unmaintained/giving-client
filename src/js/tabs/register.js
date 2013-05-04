@@ -99,7 +99,13 @@ RegisterTab.prototype.angular = function (module) {
     {
       var regInProgress;
 
-      app.id.login($scope.username, $scope.password1, {}, function(backendName,error,success){
+      // if register params exist create object else make it false
+      var register = ($routeParams.register) ? {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      } : false;
+
+      app.id.login($scope.username, $scope.password1, register, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;
