@@ -147,13 +147,14 @@ GetRippleTab.prototype.angular = function(module) {
 
     // do funding
     $scope.congrats = function() {
+      $scope.finish = false;
+      $scope.claim = true;
+
       $.post(Options.giveawayServer + '/user/' + $scope.register.id, {
         action: 'fund',
         register: $scope.register.hash,
         address: $scope.address
       }, function(res) {
-        $scope.finish = false;
-        $scope.claim = true;
         if ($scope.book &&
             "function" === typeof $scope.book.unsubscribe) {
           $scope.book.unsubscribe();
