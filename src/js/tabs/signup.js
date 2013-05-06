@@ -23,30 +23,28 @@ SignupTab.prototype.angular = function(module) {
   function($scope, $location, $id, $giveaway, $routeParams) {
     // set errors
     $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
-    // handle register
+    // handle cutoff error
     if (_.contains($scope.errors, 'cutoff')) {
       $scope.step = 'errors';
     } else if ($routeParams.register) {
+      // if already confirmed redirect to register page
+      if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
+      // if an address is already associated redirect to login
+      else if (_.contains($scope.errors, 'address_associated')) $location.path('/login');
+
+      $scope.step = 'two';
+      $scope.name = $routeParams.name;
+      $scope.email = $routeParams.email;
+      $scope.$apply();
+
+    } else {
       // test to see if user has confirmed
       $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
         action: 'associated',
         register: $routeParams.register
       }, function(d) {
-        if (d.associated)
-          webutil.redirect('/login');
-        else {
-          // if already confirmed redirect to register page
-          if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
-          // if an address is already associated redirect to login
-          else if (_.contains($scope.errors, 'address_associated')) $location.path('/login');
-
-          $scope.step = 'two';
-          $scope.name = $routeParams.name;
-          $scope.email = $routeParams.email;
-          $scope.$apply();
-        }
+        if (d.associated) webutil.redirect('/login');
       });
-    } else {
       $scope.step = 'one';
     }
 
