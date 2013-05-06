@@ -57,6 +57,17 @@ SignupTab.prototype.angular = function(module) {
     };
 
     $scope.step_three = function() {
+      //Not sure if this is the right place for this, but we'll see once testing is up.
+      /*
+      $.post("http://us4.api.mailchimp.com/1.3/", {
+        method: 'listSubscribe',
+        apikey: '940ca2c03a350c9b7c3304243cb1ec9b-us4',
+        id: '909cceb341', //Github developer giveaway
+        double_optin: true,
+        email_address: $scope.email
+      }, function(data) {
+        //No need to do anything. Emails will either send or they won't.
+      });*/
       $scope.mode = 'welcome';
     };
 
