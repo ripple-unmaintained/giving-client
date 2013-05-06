@@ -8,7 +8,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     h3 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
     h1 Confirm your details
-    form(id="signup-form", method="post", ng-submit="step_two()")
+    form(id="signup-form", name="signupForm", method="post", ng-submit="step_two()")
       label(for="name") Name
       input(type="text",id="name", name="name", ng-model="name", required)
       br
@@ -18,7 +18,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
       input(type="checkbox", ng-model="checked")
       label(class="agree") I agree to be part of this&nbsp;
         a(href="javascript:void(0)", data-toggle="modal", role="button", data-target="#devModal", data-backdrop="false") developer XRP giveaway
-      input(type="submit", class="btn btn-info", value="confirm", ng-disabled="!checked")
+      input(type="submit", class="btn btn-info", value="confirm", ng-disabled="!checked || signupForm.email.$invalid || signupForm.name.$invalid")
 
   div.step-three(ng-show="step == 'three'")
     include register
@@ -38,7 +38,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
           span.asterisk *
         input(type="email", value="", name="EMAIL", class="required email", id="mce-EMAIL")
       div.mc-field-group.input-group
-        h2 I wanted to join the XRP giveaway but  
+        h2 I wanted to join the XRP giveaway but
           span.asterisk *
         ul
           li
