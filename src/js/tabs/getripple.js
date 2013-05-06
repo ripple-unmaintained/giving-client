@@ -62,6 +62,7 @@ GetRippleTab.prototype.angular = function(module) {
             if (total == giveawayTotal) $scope.finish = true;
             // don't run again
             stateUpdated = true;
+            $scope.$apply();
           });
         }
       }
@@ -149,7 +150,6 @@ GetRippleTab.prototype.angular = function(module) {
     $scope.congrats = function() {
       $scope.finish = false;
       $scope.claim = true;
-
       $.post(Options.giveawayServer + '/user/' + $scope.register.id, {
         action: 'fund',
         register: $scope.register.hash,
