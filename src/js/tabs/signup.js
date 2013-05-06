@@ -33,7 +33,7 @@ SignupTab.prototype.angular = function(module) {
         register: $routeParams.register
       }, function(d) {
         if (d.associated)
-          webutil.redirect('/signup');
+          webutil.redirect('/login');
         else {
           // if already confirmed redirect to register page
           if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
