@@ -1,5 +1,6 @@
 var util = require('util');
-var Tab = require('../client/tab').Tab;
+    Tab = require('../client/tab').Tab,
+    webutil = require('../util/web');
 
 var RegisterTab = function ()
 {
@@ -37,7 +38,7 @@ RegisterTab.prototype.angular = function (module) {
     if ($id.loginStatus) {
       var funded = false; //TODO: API call for our address and github id
       var defaultDestination = funded ? '/balance' : '/getripple'
-      $location.path(defaultDestination);
+      webutil.redirect(defaultDestination);
       return;
     }
 
@@ -99,7 +100,13 @@ RegisterTab.prototype.angular = function (module) {
     {
       var regInProgress;
 
-      app.id.login($scope.username, $scope.password1, {}, function(backendName,error,success){
+      // if register params exist create object else make it false
+      var register = ($routeParams.register) ? {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      } : false;
+
+      app.id.login($scope.username, $scope.password1, register, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;
@@ -110,7 +117,7 @@ RegisterTab.prototype.angular = function (module) {
               $scope.mode = 'masterkeyerror';
               $scope.$digest();
             } else {
-              $location.path('/balance');
+              webutil.redirect('/balance');
             }
           }
         }
@@ -120,7 +127,6 @@ RegisterTab.prototype.angular = function (module) {
     // workaround to preserve get query string
     $scope.open_wallet = function(){
       $location.path('/login');
-      return false;
     };
 
     $scope.goToBalance = function()
