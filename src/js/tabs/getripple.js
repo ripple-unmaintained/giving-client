@@ -1,5 +1,4 @@
 var util = require('util'),
-  webutil = require('../util/web'),
   Tab = require('../client/tab').Tab,
   Amount = ripple.Amount,
   giveawayTotal = 4;
