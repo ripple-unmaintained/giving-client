@@ -6,7 +6,8 @@
 
 var util = require('util'),
     Base58Utils = require('../util/base58'),
-    RippleAddress = require('../util/types').RippleAddress;
+    RippleAddress = require('../util/types').RippleAddress,
+    registered = false;
 
 var module = angular.module('id', ['blob']);
 
@@ -74,6 +75,12 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
   Id.prototype.init = function ()
   {
+    // if register params exist create object else make it false
+    var register = ($scope.$routeParams.register) ? {
+      id: $scope.$routeParams.id,
+      hash: $scope.$routeParams.register
+    } : false;
+
     // Initializing sjcl.random doesn't really belong here, but there is no other
     // good place for it yet.
     for (var i = 0; i < 8; i++) {
@@ -98,6 +105,10 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     $scope.$watch('userBlob',function(){
       // XXX Maybe the blob service should handle this stuff?
       $scope.$broadcast('$blobUpdate');
+
+      // if register is available and does not exist in userBlob then save now
+      if ((register) && ( ! $scope.userBlob.data.register))
+        $scope.userBlob.data.giveaway_register = register;
 
       if (self.username && self.password) {
         $blob.set(self.blobBackends,
@@ -136,6 +147,29 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     $scope.userCredentials.password = password;
   };
 
+  Id.prototype.setGiveaway = function (register)
+  {
+    this.giveaway_register = register;
+    this.app.$scope.userCredentials.giveaway_register = register;
+  };
+
+  // do a post here to associate ripple giveaway address to id
+  Id.prototype.giveawayAddress = function(register, address)
+  {
+    if (registered)
+      return false;
+
+    var self = this;
+    $.post(Options.giveawayServer + '/user/' + register.id, {
+        action: 'address',
+        register: register.hash,
+        address: address
+    }, function(data){
+      registered = true;
+      self.$broadcast('$giveawayAddress', data);
+    });
+  };
+
   Id.prototype.setAccount = function (accId, accKey)
   {
     if (this.account !== null) {
@@ -164,7 +198,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     }
   };
 
-  Id.prototype.register = function (username, password, callback, masterkey)
+  Id.prototype.register = function (username, password, register, callback, masterkey)
   {
     var self = this;
 
@@ -184,7 +218,8 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       data: {
         master_seed: masterkey,
         account_id: (new RippleAddress(masterkey)).getAddress(),
-        contacts: []
+        contacts: [],
+        giveaway_register: register
       },
       meta: {
         created: (new Date()).toJSON(),
@@ -194,19 +229,23 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
     // Add user to blob
     $blob.set(self.blobBackends, username.toLowerCase(), password, data, function () {
-      $scope.userBlob = data;
-      self.setUsername(username);
-      self.setPassword(password);
-      self.setAccount(data.data.account_id, data.data.master_seed);
-      self.storeLogin(username, password);
-      self.loginStatus = true;
-      $scope.$broadcast('$blobUpdate');
-      store.set('ripple_known', true);
-      callback(data.data.master_seed);
+      self.giveawayAddress(register, data.data.account_id);
+        $scope.$on('$giveawayAddress', function(res){
+        $scope.userBlob = data;
+        self.setUsername(username);
+        self.setPassword(password);
+        self.setGiveaway(register);
+        self.setAccount(data.data.account_id, data.data.master_seed);
+        self.storeLogin(username, password);
+        self.loginStatus = true;
+        $scope.$broadcast('$blobUpdate');
+        store.set('ripple_known', true);
+        callback(data.data.master_seed);
+      });
     });
   };
 
-  Id.prototype.login = function (username,password,callback)
+  Id.prototype.login = function (username,password,register,callback)
   {
     var self = this;
 
@@ -222,22 +261,33 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
         return;
       }
 
-      // Ensure certain properties exist
-      $.extend(true, blob, Id.minimumBlob);
+      $scope.$on('$giveawayAddress', function(res){
+        // Ensure certain properties exist
+        $.extend(true, blob, Id.minimumBlob);
 
-      $scope.userBlob = {
-        data: blob.data,
-        meta: blob.meta
-      };
-      self.setUsername(username);
-      self.setPassword(password);
-      self.setAccount(blob.data.account_id, blob.data.master_seed);
-      self.storeLogin(username, password);
-      self.loginStatus = true;
-      $scope.$broadcast('$blobUpdate');
-      store.set('ripple_known', true);
+        $scope.userBlob = {
+          data: blob.data,
+          meta: blob.meta
+        };
+        self.setUsername(username);
+        self.setPassword(password);
+        self.setGiveaway(blob.data.giveaway_register);
+        self.setAccount(blob.data.account_id, blob.data.master_seed);
+        self.storeLogin(username, password);
+        self.loginStatus = true;
+        $scope.$broadcast('$blobUpdate');
+        store.set('ripple_known', true);
 
-      callback(backendName, null, !!blob.data.account_id);
+        callback(backendName, null, !!blob.data.account_id);
+      });
+
+      // if register doesn't exist in blob and register has been passed
+      if ((! blob.data.register_hash) && (register))
+        self.giveawayAddress(register, blob.data.account_id);
+      // if not updating register hash then call giveawayaddress to advance login process
+      else
+        $scope.$broadcast('$giveawayAddress', {});
+
     });
   };
 
