@@ -19,8 +19,6 @@ GetRippleTab.prototype.generateHtml = function() {
 
 GetRippleTab.prototype.angularDeps = Tab.prototype.angularDeps.concat(['books']);
 GetRippleTab.prototype.angular = function(module) {
-  var self = this,
-    app = this.app;
 
   module.controller('GetRippleCtrl', ['rpBooks', '$scope', '$routeParams', '$rootScope', 'rpId',
 
@@ -127,7 +125,6 @@ GetRippleTab.prototype.angular = function(module) {
     // watch for payout variable to updated
     $scope.$watch('payout', function() {
       // update payout variable
-      console.log(Options.giveawayServer + '/user/payout');
       $.get(Options.giveawayServer + '/user/payout', function(d){
         $scope.payout = d.payout;
       });
