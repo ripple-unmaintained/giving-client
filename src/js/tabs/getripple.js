@@ -126,30 +126,33 @@ GetRippleTab.prototype.angular = function(module) {
 
     // watch for payout variable to updated
     $scope.$watch('payout', function() {
-      var ask, bid, unrounded;
-      $scope.$watch('book.asks', function(asks) {
-        if (!(asks.length)) return;
-        ask = asks[0].quality / 1000000;
-        if (!ask) return;
-        unrounded = $scope.payout / ((ask + bid) / 2);
-        $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2); //TODO: Round using filter, not in this code
-        $scope.updated_time = currentTime();
-      }, true);
-
-      $scope.$watch('book.bids', function(bids) {
-        if (!(bids.length)) return;
-        bid = 0.000001 / bids[0].quality;
-        if (!bid) return;
-        unrounded = $scope.payout / ((ask + bid) / 2);
-        $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2);
-        $scope.updated_time = currentTime();
-      }, true);
+      // update payout variable
+      console.log(Options.giveawayServer + '/user/payout');
+      $.get(Options.giveawayServer + '/user/payout', function(d){
+        $scope.payout = d.payout;
+      });
     });
 
-    // update payout variable
-    $.get(Options.giveawayServer + '/user/payout', function(d){
-      $scope.payout = d.payout;
-    });
+
+
+    var ask, bid, unrounded;
+    $scope.$watch('book.asks', function(asks) {
+      if (!(asks.length)) return;
+      ask = asks[0].quality / 1000000;
+      if (!ask) return;
+      unrounded = $scope.payout / Math.sqrt(ask * bid);
+      $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2); //TODO: Round using filter, not in this code
+      $scope.updated_time = currentTime();
+    }, true);
+
+    $scope.$watch('book.bids', function(bids) {
+      if (!(bids.length)) return;
+      bid = 0.000001 / bids[0].quality;
+      if (!bid) return;
+      unrounded = $scope.payout / Math.sqrt(ask * bid);
+      $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2);
+      $scope.updated_time = currentTime();
+    }, true);
 
     // do funding
     $scope.congrats = function() {

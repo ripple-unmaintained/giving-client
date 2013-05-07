@@ -59,6 +59,21 @@ SignupTab.prototype.angular = function(module) {
         name: $scope.name,
         email: $scope.email
       }, function(data) {
+        console.log("CONFIRM DONE, SENDING EMAILS?");
+        $.post("http://us4.api.mailchimp.com/1.3/", {
+          method: 'listSubscribe',
+          apikey: '940ca2c03a350c9b7c3304243cb1ec9b-us4',
+          id: '909cceb341', //Github developer giveaway
+          double_optin: true,
+          email_address: $scope.email,
+          merge_vars : {
+            FNAME: $scope.name,
+            LNAME: ""
+          }
+        }, function(data) {
+          //No need to do anythingc here. Emails will either send or they won't.
+          console.log("SENT EMAIL?", data);
+        });
         $scope.step = 'three';
         // necessary to apply variable within a callback
         $scope.$apply();
@@ -67,8 +82,8 @@ SignupTab.prototype.angular = function(module) {
 
     $scope.step_three = function() {
       $scope.mode = 'welcome';
+      $scope.$apply();   
     };
-
   }]);
 };
 
