@@ -119,7 +119,11 @@ GetRippleTab.prototype.angular = function(module) {
       } else if (hour > 12) {
         hour -= 12;
       }
-      return hour + ":" + currentdate.getMinutes() + meridian;
+      var minutes = ""+(currentdate.getMinutes());
+      if (minutes.length == 1) {
+        minutes = "0"+minutes;
+      }
+        return hour + ":" + minutes + meridian;
     }
 
     // watch for payout variable to updated
