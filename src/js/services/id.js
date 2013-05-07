@@ -150,7 +150,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
   Id.prototype.setGiveaway = function (register)
   {
     this.giveaway_register = register;
-    this.app.$scope.userCredentials.giveaway_register = register;
+    $scope.userCredentials.giveaway_register = register;
   };
 
   // do a post here to associate ripple giveaway address to id
@@ -166,7 +166,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
         address: address
     }, function(data){
       registered = true;
-      self.$broadcast('$giveawayAddress', data);
+      $scope.$broadcast('$giveawayAddress', data);
     });
   };
 
@@ -321,6 +321,8 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       }
     }
   };
+
+  // smart redirecting
 
   return new Id();
 }]);
