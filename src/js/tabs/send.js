@@ -6,8 +6,6 @@ var util = require('util'),
 var SendTab = function ()
 {
   Tab.call(this);
-
-  this.on('retrigger', this.handleRetrigger.bind(this));
 };
 
 util.inherits(SendTab, Tab);
@@ -21,11 +19,10 @@ SendTab.prototype.generateHtml = function ()
 
 SendTab.prototype.angular = function (module)
 {
-  var self = this,
-      app = this.app;
+  var self = this;
 
-  module.controller('SendCtrl', ['$scope', '$timeout', '$routeParams', 'rpId',
-                                 function ($scope, $timeout, $routeParams, $id)
+  module.controller('SendCtrl', ['$scope', '$timeout', '$routeParams', 'rpId', 'rpNetwork',
+                                 function ($scope, $timeout, $routeParams, $id, $network)
   {
     if (!$id.loginStatus) return $id.goId();
 
@@ -115,37 +112,36 @@ SendTab.prototype.angular = function (module)
       if ($scope.xrp_memory.hasOwnProperty(recipient)) {
         setError();
       } else {
-        app.net.remote.request_account_info($scope.send.recipient_address)
+        $network.remote.request_account_info($scope.send.recipient_address)
           .on('error', function (e) {
-            if (e.remote.error == "actNotFound") {
-              $scope.xrp_memory[recipient] = 0;
-            }
-            setError();
+            $scope.$apply(function () {
+              if (e.remote.error == "actNotFound") {
+                $scope.xrp_memory[recipient] = "0";
+              }
+              setError();
+            });
           })
           .on('success', function (data) {
-            $scope.xrp_memory[recipient] = parseFloat(data.account_data.Balance);
-            setError();
+            $scope.$apply(function () {
+              $scope.xrp_memory[recipient] = data.account_data.Balance;
+              setError();
+            });
           })
           .request();
       }
       function setError() {
-        var total = $scope.send.amount_feedback._value + $scope.xrp_memory[recipient];
-        
-        if (total < 2000000000 ) { 
-          if($scope.$$phase) {
-            $scope.send.path_status = "insufficient-xrp";
-          } else {
-            $scope.$apply(function(){
-                $scope.send.path_status = "insufficient-xrp";
-            });
-          }
+        var total = $scope.send.amount_feedback.add($scope.xrp_memory[recipient]);
+        var reserve_base = $scope.account.reserve_base;
+        if (total.compareTo(reserve_base) < 0) {
+          $scope.send.path_status = "insufficient-xrp";
+          $scope.xrp_deficiency = reserve_base.subtract($scope.xrp_memory[recipient]);
         }
       }
     };
 
     $scope.update_paths = function () {
       var recipient = $scope.send.recipient_address;
-      app.net.remote.request_ripple_path_find(app.id.account,
+      $network.remote.request_ripple_path_find($id.account,
                                               $scope.send.recipient_address,
                                               $scope.send.amount_feedback)
         .on('error', function (e) {
@@ -233,8 +229,6 @@ SendTab.prototype.angular = function (module)
       if ($scope.saveAddressForm) $scope.saveAddressForm.$setPristine(true);
     };
 
-    self.on('reset', $scope.reset);
-
     $scope.reset_goto = function (tabName) {
       $scope.reset();
 
@@ -253,7 +247,7 @@ SendTab.prototype.angular = function (module)
 
       $scope.mode = "wait_path";
 
-      app.net.remote.request_account_info($scope.send.recipient_address)
+      $network.remote.request_account_info($scope.send.recipient_address)
         .on('error', function (data) {
           $scope.$apply(function () {
             $scope.mode = "error";
@@ -272,7 +266,7 @@ SendTab.prototype.angular = function (module)
           if (amount.is_native() && !$scope.send.source_currency) {
             $scope.$apply($scope.send_prepared);
           } else {
-            app.net.remote.request_ripple_path_find(app.id.account,
+            $network.remote.request_ripple_path_find($id.account,
                                                     $scope.send.recipient_address,
                                                     amount)
             // XXX Handle error response
@@ -311,8 +305,7 @@ SendTab.prototype.angular = function (module)
       $scope.confirm_wait = true;
       $timeout(function () {
         $scope.confirm_wait = false;
-        $scope.$digest();
-      }, 1000);
+      }, 1000, true);
 
       $scope.mode = "confirm";
     };
@@ -328,7 +321,7 @@ SendTab.prototype.angular = function (module)
 
       amount.set_issuer(addr);
 
-      var tx = app.net.remote.transaction();
+      var tx = $network.remote.transaction();
 
       // Destination tag
       tx.destination_tag(dt);
@@ -338,7 +331,7 @@ SendTab.prototype.angular = function (module)
         tx.source_tag($scope.send.st);
       }
 
-      tx.payment(app.id.account, addr, amount.to_json());
+      tx.payment($id.account, addr, amount.to_json());
       if (!amount.is_native()) {
         if ($scope.send.alt) {
           tx.send_max($scope.send.alt.send_max);
@@ -348,40 +341,41 @@ SendTab.prototype.angular = function (module)
         }
       }
       tx.on('success', function (res) {
-        setEngineStatus(res, false);
-        $scope.sent(this.hash);
+        $scope.$apply(function () {
+          setEngineStatus(res, false);
+          $scope.sent(tx.hash);
 
-        // Remember currency and increase order
-        var found;
+          // Remember currency and increase order
+          var found;
 
-        for (var i = 0; i < $scope.currencies_all.length; i++) {
-          if ($scope.currencies_all[i].value.toLowerCase() == $scope.send.amount_feedback.currency().to_human().toLowerCase()) {
-            $scope.currencies_all[i].order++;
-            found = true;
-            break;
+          for (var i = 0; i < $scope.currencies_all.length; i++) {
+            if ($scope.currencies_all[i].value.toLowerCase() == $scope.send.amount_feedback.currency().to_human().toLowerCase()) {
+              $scope.currencies_all[i].order++;
+              found = true;
+              break;
+            }
           }
-        }
 
-        if (!found) {
-          $scope.currencies_all.push({
-            "name": $scope.send.amount_feedback.currency().to_human().toUpperCase(),
-            "value": $scope.send.amount_feedback.currency().to_human().toUpperCase(),
-            "order": 1
-          });
-        }
-
-        $scope.$digest();
+          if (!found) {
+            $scope.currencies_all.push({
+              "name": $scope.send.amount_feedback.currency().to_human().toUpperCase(),
+              "value": $scope.send.amount_feedback.currency().to_human().toUpperCase(),
+              "order": 1
+            });
+          }
+        });
       });
       tx.on('error', function (res) {
         setImmediate(function () {
-          $scope.mode = "error";
+          $scope.$apply(function () {
+            $scope.mode = "error";
 
-          if (res.error === 'remoteError' &&
-              res.remote.error === 'noPath') {
-            $scope.mode = "status";
-            $scope.tx_result = "noPath";
-          }
-          $scope.$digest();
+            if (res.error === 'remoteError' &&
+                res.remote.error === 'noPath') {
+              $scope.mode = "status";
+              $scope.tx_result = "noPath";
+            }
+          });
         });
       });
       tx.submit();
@@ -394,14 +388,15 @@ SendTab.prototype.angular = function (module)
      */
     $scope.sent = function (hash) {
       $scope.mode = "status";
-      app.net.remote.on('transaction', handleAccountEvent);
+      $network.remote.on('transaction', handleAccountEvent);
 
       function handleAccountEvent(e) {
-        if (e.transaction.hash === hash) {
-          setEngineStatus(e, true);
-          $scope.$digest();
-          app.net.remote.removeListener('transaction', handleAccountEvent);
-        }
+        $scope.$apply(function () {
+          if (e.transaction.hash === hash) {
+            setEngineStatus(e, true);
+            $network.remote.removeListener('transaction', handleAccountEvent);
+          }
+        });
       }
     };
 
@@ -435,15 +430,16 @@ SendTab.prototype.angular = function (module)
       var contact = {
         'name': $scope.saveAddressName,
         'address': $scope.send.recipient_address
-      }
+      };
 
-      app.id.once('blobsave', function(){
+      var removeListener = $scope.$on('$blobSave', function () {
+        removeListener();
         $scope.contact = contact;
         $scope.addressSaved = true;
-      })
+      });
 
-      app.$scope.userBlob.data.contacts.unshift(contact);
-    }
+      $scope.userBlob.data.contacts.unshift(contact);
+    };
 
     $scope.reset();
   }]);
@@ -514,13 +510,5 @@ SendTab.prototype.angular = function (module)
     };
   });
 }
-
-SendTab.prototype.handleRetrigger = function () {
-  var $scope = $('#t-send').data('$scope');
-  if ($scope && $scope.mode !== 'form') {
-    $scope.reset();
-    $scope.$digest();
-  }
-};
 
 module.exports = SendTab;

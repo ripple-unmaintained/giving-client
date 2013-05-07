@@ -19,22 +19,49 @@ BalanceTab.prototype.generateHtml = function ()
 BalanceTab.prototype.angular = function (module)
 {
   var self = this;
-  var app = this.app;
 
-  module.controller('BalanceCtrl', ['$scope', 'rpId',
-                                     function ($scope, $id)
+  module.controller('BalanceCtrl', ['$scope', 'rpId', 'rpNetwork',
+                                     function ($scope, $id, $network)
   {
-    var remote = app.net.remote;
-
     if (!$id.loginStatus) return $id.goId();
 
     $scope.transactions = [];
     $scope.current_page = 1;
 
+    // filter effect types
+    // Show only offer_funded, offer_partially_funded, offer_cancelled, offer_bought side effects
+    var filterEffects = function (events) {
+      var transactions = [];
+
+      $.each(events,function(){
+        var event = this;
+        var effects = [];
+
+        if (event.effects) {
+          $.each(event.effects, function(){
+            var effect = this;
+            if (effect.type == 'offer_funded'
+                || effect.type == 'offer_partially_funded'
+                || effect.type == 'offer_bought') {
+              effects.push(effect);
+            }
+          });
+
+          event.effects = effects;
+        }
+
+        if (effects.length || event.transaction) {
+          transactions.push(event);
+        }
+      });
+
+      return transactions;
+    };
+
     // First page transactions
     $scope.$watch('events', function(){
-      if ($scope.transactions.length === 0) {
-        $scope.transactions = $scope.events;
+      if (1 === $scope.current_page) {
+        $scope.transactions = filterEffects($scope.events);
       }
     }, true);
 
@@ -52,7 +79,7 @@ BalanceTab.prototype.angular = function (module)
       // Click on disabled links
       if (!page) return;
 
-      var account = app.id.account;
+      var account = $id.account;
       var offset = (page - 1) * Options.transactions_per_page;
 
       // Next, prev page numbers
@@ -64,22 +91,33 @@ BalanceTab.prototype.angular = function (module)
       // Loading mode
       $scope.loading = true;
 
-      remote.request_account_tx(account, 0, 9999999, true, Options.transactions_per_page, offset)
+      $network.remote.request_account_tx({
+        'account': account,
+        'ledger_index_min': 0,
+        'ledger_index_max': 9999999,
+        'descending': true,
+        'offset': offset,
+        'limit': Options.transactions_per_page
+      })
         .on('success', function(data) {
-            $scope.transactions = [];
-            $scope.$apply(function () {
-              if (data.transactions) {
-                data.transactions.forEach(function (e) {
-                  var tx = rewriter.processTxn(e.tx, e.meta, account);
-                  if (tx.type !== 'ignore') {
-                    $scope.transactions.push(tx);
-                  }
-                });
+          $scope.transactions = [];
+          $scope.$apply(function () {
+            if (data.transactions) {
+              var transactions = [];
 
-                // Loading mode
-                $scope.loading = false;
-              }
-            });
+              data.transactions.forEach(function (e) {
+                var tx = rewriter.processTxn(e.tx, e.meta, account);
+                if (tx) {
+                  transactions.push(tx);
+                }
+              });
+
+              $scope.transactions = filterEffects(transactions);
+
+              // Loading mode
+              $scope.loading = false;
+            }
+          });
         })
         .on('error', function(err){console.log(err);}).request();
     }

@@ -26,7 +26,7 @@ section.single.content(ng-controller="RegisterCtrl")
             name='register_password2'
             type='password'
             ng-model="password2"
-            required, rp-same-as="register_password1")
+            required, rp-same-in-set="passwordSet")
         div(class="strength {{strength}}")
           {{strength}}
         div#password_tooltip(ng-show="showPasswordTooltip") Please mix letters, numbers and symbols in your password.
@@ -38,7 +38,7 @@ section.single.content(ng-controller="RegisterCtrl")
         .errorBox(ng-show="registerForm.register_masterkey.$error.rpMasterKey")
           p.text-error Secret Account Key is invalid
       .submitsection
-        button.btn.btn-info(type='submit', ng-disabled='registerForm.$invalid') Create Wallet
+        button.btn.btn-info(type='submit', ng-disabled='registerForm.$invalid || disableSubmit') Create Wallet
         .storeinfo
           | Store your wallet with:&nbsp;
           br

@@ -5,8 +5,6 @@ var util = require('util');
 var RegisterTab = function ()
 {
   Tab.call(this);
-
-  this.on('afterrender', this.onAfterRender.bind(this));
 };
 
 util.inherits(RegisterTab, Tab);
@@ -23,17 +21,8 @@ RegisterTab.prototype.generateHtml = function ()
 
 
 RegisterTab.prototype.angular = function (module) {
-  var app = this.app;
-  module.directive('ngBlur', function() {
-    return function( scope, elem, attrs ) {
-      elem.bind('blur', function() {
-        scope.$apply(attrs.ngBlur);
-      });
-    };
-  });
-
-  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId', '$routeParams',
-                                     function ($scope, $location, $id, $routeParams)
+  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId',
+                                     function ($scope, $location, $id)
   {
     if ($id.loginStatus) {
       var funded = false; //TODO: API call for our address and github id
@@ -44,14 +33,15 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.backendChange = function()
     {
-      app.id.blobBackends = $scope.blobBackendCollection.something.value.split(',');
-      store.set('ripple_blobBackends', app.id.blobBackends);
+      $id.blobBackends = $scope.blobBackendCollection.something.value.split(',');
+      store.set('ripple_blobBackends', $id.blobBackends);
     };
 
     $scope.reset = function()
     {
       $scope.username = '';
       $scope.password = '';
+      $scope.passwordSet = {};
       $scope.password1 = '';
       $scope.password2 = '';
       $scope.master = '';
@@ -64,7 +54,7 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.register = function()
     {
-      app.id.register($scope.username, $scope.password1, {
+      $id.register($scope.username, $scope.password1, {
         id: $routeParams.id,
         hash: $routeParams.register
       },
@@ -73,7 +63,6 @@ RegisterTab.prototype.angular = function (module) {
         $scope.keyOpen = key;
         $scope.key = $scope.keyOpen[0] + new Array($scope.keyOpen.length).join("*");
         $scope.mode = 'welcome';
-        $scope.$digest();
       }, $scope.masterkey);
     };
 
@@ -98,6 +87,9 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.submitForm = function()
     {
+      // Disable submit button
+      $scope.disableSubmit = true;
+
       var regInProgress;
 
       // if register params exist create object else make it false
@@ -106,16 +98,15 @@ RegisterTab.prototype.angular = function (module) {
         hash: $routeParams.register
       } : false;
 
-      app.id.login($scope.username, $scope.password1, register, function(backendName,error,success){
+      $id.login($scope.username, $scope.password1, register, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;
             $scope.register();
           }
           if (success) {
-            if ($scope.masterkey && $scope.masterkey != app.$scope.userCredentials.master_seed) {
+            if ($scope.masterkey && $scope.masterkey != $scope.userCredentials.master_seed) {
               $scope.mode = 'masterkeyerror';
-              $scope.$digest();
             } else {
               webutil.redirect('/balance');
             }
@@ -138,13 +129,6 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.reset();
   }]);
-};
-
-RegisterTab.prototype.onAfterRender = function ()
-{
-  setImmediate(function() {
-    $("#register_username").focus();
-  });
 };
 
 module.exports = RegisterTab;
