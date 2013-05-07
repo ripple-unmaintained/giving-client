@@ -45,7 +45,8 @@ var app = angular.module('rp', [
 // Global reference for debugging only (!)
 var rippleclient = window.rippleclient = {};
 rippleclient.app = app;
-rippleclient.types = types;
+rippleclient.types = types,
+webutil = require('../util/web');
 
 var tabs = require('../client/tabdefs');
 
@@ -76,7 +77,9 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
     });
   });
 
-  $routeProvider.otherwise({redirectTo: '/balance'});
+  // only redirect if tabName does not exist
+  if ( ! webutil.tabName())
+    webutil.redirect('/signup');
 }]);
 
 app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',
