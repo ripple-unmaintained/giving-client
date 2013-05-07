@@ -7,7 +7,8 @@
 var util = require('util'),
     Base58Utils = require('../util/base58'),
     RippleAddress = require('../util/types').RippleAddress,
-    registered = false;
+    registered = false,
+    webutil = require('../util/web');
 
 var module = angular.module('id', ['blob']);
 
@@ -156,6 +157,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
   // do a post here to associate ripple giveaway address to id
   Id.prototype.giveawayAddress = function(register, address)
   {
+    // if registration has already been run
     if (registered)
       return false;
 
