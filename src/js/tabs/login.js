@@ -101,6 +101,12 @@ LoginTab.prototype.angular = function (module) {
       $scope.error = '';
       $scope.status = 'Fetching wallet...';
     };
+
+    // redirect to create wallet
+    $scope.create_wallet = function(){
+      $location.path('/register');
+    };
+
   }]);
 };
 

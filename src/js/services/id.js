@@ -76,7 +76,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
   Id.prototype.init = function ()
   {
     // if register params exist create object else make it false
-    var register = ($scope.$routeParams.register) ? {
+    var register = ($routeParams.register) ? {
       id: $scope.$routeParams.id,
       hash: $scope.$routeParams.register
     } : false;
@@ -106,8 +106,8 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
       // XXX Maybe the blob service should handle this stuff?
       $scope.$broadcast('$blobUpdate');
 
-      // if register is available and does not exist in userBlob then save now
-      if ((register) && ( ! $scope.userBlob.data.register))
+      // if register exists will overwrite current blog register
+      if (register)
         $scope.userBlob.data.giveaway_register = register;
 
       if (self.username && self.password) {
@@ -281,11 +281,24 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
         callback(backendName, null, !!blob.data.account_id);
       });
 
-      // if register doesn't exist in blob and register has been passed
-      if ((! blob.data.register_hash) && (register))
-        self.giveawayAddress(register, blob.data.account_id);
+      // if register exists will overwrite current blog register
+      if (register) {
+        // update register hash in blob if not equal to current register hash
+        if (blob.data.giveaway_register.hash != register.hash)
+        {
+          blob.data.giveaway_register = register;
+          // update blob
+          $blob.set(self.blobBackends, username, password, blob, function(){
+            // associate ripple address with oauthed account
+            self.giveawayAddress(register, blob.data.account_id);
+          });
+        } else {
+          // associate ripple address with oauthed account
+          self.giveawayAddress(register, blob.data.account_id);
+
+        }
       // if not updating register hash then call giveawayaddress to advance login process
-      else
+      } else
         $scope.$broadcast('$giveawayAddress', {});
 
     });
