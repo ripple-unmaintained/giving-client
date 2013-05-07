@@ -21,15 +21,15 @@ RegisterTab.prototype.generateHtml = function ()
 
 
 RegisterTab.prototype.angular = function (module) {
-  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId',
-                                     function ($scope, $location, $id)
+  module.controller('RegisterCtrl', ['$scope', '$location', 'rpId', '$routeParams',
+                                     function ($scope, $location, $id, $routeParams)
   {
-    if ($id.loginStatus) {
-      var funded = false; //TODO: API call for our address and github id
-      var defaultDestination = funded ? '/balance' : '/getripple'
-      webutil.redirect(defaultDestination);
-      return;
-    }
+    // if logged in redirect appropriately
+    if ($id.loginStatus)
+      webutil.defaultDestination($id);
+    //  if register hash is empty then redirect to signup
+    else if ( ! $routeParams.register)
+      $location.path('/signup');
 
     $scope.backendChange = function()
     {
