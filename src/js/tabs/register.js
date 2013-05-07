@@ -54,7 +54,7 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.register = function()
     {
-      app.id.register($scope.username, $scope.password1, {
+      $id.register($scope.username, $scope.password1, {
         id: $routeParams.id,
         hash: $routeParams.register
       },
@@ -98,7 +98,7 @@ RegisterTab.prototype.angular = function (module) {
         hash: $routeParams.register
       } : false;
 
-      app.id.login($scope.username, $scope.password1, register, function(backendName,error,success){
+      $id.login($scope.username, $scope.password1, register, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;

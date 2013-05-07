@@ -78,7 +78,7 @@ LoginTab.prototype.angular = function (module) {
       } : false;
 
       setImmediate(function () {
-        app.id.login($scope.username, $scope.password, register,
+        $id.login($scope.username, $scope.password, register,
           function(backendName, err, success) {
           $scope.ajax_loading = false;
           if (success) {
