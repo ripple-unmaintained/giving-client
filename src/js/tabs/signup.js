@@ -35,7 +35,6 @@ SignupTab.prototype.angular = function(module) {
       $scope.step = 'two';
       $scope.name = $routeParams.name;
       $scope.email = $routeParams.email;
-      $scope.$apply();
 
     } else {
       // test to see if user has confirmed
