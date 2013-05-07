@@ -41,7 +41,7 @@ section.single.content(ng-controller="LoginCtrl")
             a(ng-click="storeChange=false") ok
       p.literal
         | New to ripple?&nbsp;
-        a(href='#register') Create a wallet
+        a(href="javascript:void(0)", ng-click="create_wallet()") Create a wallet
 
   .action-login(ng-show="$routeParams.tab")
     div(ng-show="'send' == $routeParams.tab")
@@ -99,4 +99,4 @@ section.single.content(ng-controller="LoginCtrl")
         | You can confirm this transaction on the next page.
       p.literal
         | New to ripple?&nbsp;
-        a(href='#/register') Create a wallet
+        a(href="javascript:void(0)", ng-click="create_wallet()") Create a wallet
