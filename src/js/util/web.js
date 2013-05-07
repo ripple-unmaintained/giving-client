@@ -201,5 +201,22 @@ exports.escapeRegExp = function (str)
  */
 exports.redirect = function(to)
 {
-  window.location = window.location.pathname + '#/' + to;
+  window.location = window.location.pathname + '#' + to;
+}
+
+/**
+ * Return tab name
+ */
+exports.tabName = function()
+{
+  return (window.location.hash) ? window.location.hash.match(/(#\/)?(.+?)(\/.+)?$/)[2] : false;
+}
+
+/**
+ * Redirect to proper location based on funding
+ */
+exports.defaultDestination = function($id) {
+  var funded = true;
+  var defaultDestination = ((funded) && ($id)) ? '/balance' : '/getripple'
+  webutil.redirect(defaultDestination);
 }
