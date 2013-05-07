@@ -18,9 +18,9 @@ SignupTab.prototype.generateHtml = function() {
 SignupTab.prototype.angular = function(module) {
   var app = this.app;
 
-  module.controller('SignupCtrl', ['$scope', '$location', 'rpId', 'rpGiveaway', '$routeParams',
+  module.controller('SignupCtrl', ['$scope', '$location', 'rpId', '$routeParams',
 
-  function($scope, $location, $id, $giveaway, $routeParams) {
+  function($scope, $location, $id, $routeParams) {
     // set errors
     $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
     // handle cutoff error
