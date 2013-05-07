@@ -25,16 +25,12 @@ LoginTab.prototype.angular = function (module) {
                                   function ($scope, $element, $routeParams,
                                             $location, $id)
   {
+    // if logged in redirect appropriately
+    if ($id.loginStatus)
+      webutil.defaultDestination($id);
     //  if register hash is empty then redirect to signup
-    if ( ! $routeParams.register)
+    else if ( ! $routeParams.register)
       $location.path('/signup');
-
-    if ($id.loginStatus) {
-      var funded = false; //TODO: API call for our address and github id
-      var defaultDestination = funded ? '/balance' : '/getripple'
-      webutil.redirect(defaultDestination);
-      return;
-    }
 
     $scope.backendChange = function()
     {
@@ -85,9 +81,7 @@ LoginTab.prototype.angular = function (module) {
             if ($routeParams.tab) {
               $location.path('/'+$routeParams.tab);
             } else {
-              var funded = false; //TODO: API call for our address and github id
-              var defaultDestination = funded ? '/balance' : '/getripple'
-              webutil.redirect(defaultDestination);
+              webutil.defaultDestination();
             }
           } else {
             $scope.backendMessages.push({'backend':backendName, 'message':err.message});
