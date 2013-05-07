@@ -1,0 +1,412 @@
+//custom styling for the giveaway client. don't want to mess up existing client's css structure. will merge when it is time.
+
+//variables
+@sans: 'OpenSansLight', 'HelveticaNeue-Light', Helvetica, Arial, sans-serif;
+@lightyellow: lighten(@yellow,40%);
+@lightgreen: #ABC655;
+@rippleblue:#346AA9;
+
+.bold(@size:100%){
+	font-family: 'OpenSansBold', 'HelveticaNeue-Bold', Helvetica, Arial, sans-serif;
+	font-weight:bold;
+	font-size: @size;
+}
+
+//start giveaway styling
+.giveaway{
+	h1{
+		border:0;
+	}
+	&.signup{
+		h1{
+			font-size:44px;
+			padding-top: 25px;
+			padding-bottom: 0;
+			margin-bottom: 15px;
+			&.too-new{
+				font-size:30px;
+				text-align: left;
+				padding-top:15px;
+			}
+		}
+
+		h2{
+			font-size:26px;
+		}
+		h3{
+			margin-top: 40px;
+			font:22px 'OpenSansLight';
+		}
+		.btn{
+			display:block;
+
+			min-width:300px;
+		}
+		span{
+			display:block;
+			color: #666;
+		}
+		.step-one{
+			text-align: center;
+			.btn{
+				margin: 25px auto 15px;
+			}
+		}
+
+		.step-two{
+			span{
+				margin-left: 220px;
+			}
+		}
+
+		div.step-three{
+			padding:0;
+		}
+
+		#signup-form{
+			margin-left: 220px;
+			max-width:400px;
+			input{
+				&[type="text"], &[type="email"]{
+					width:90%;
+				}
+				&[type="checkbox"]{
+					display:inline;
+					margin-top: 0;
+				}
+			}
+			.agree{
+				display:inline;
+				font-size: 14px;
+				margin-left: 5px;
+			}
+
+			.btn{
+
+				margin-top: 25px;
+			}
+		}
+	}
+}
+
+header{
+	nav{
+		ul{
+			> li{
+				&#nav-getripple{
+					a{
+
+						background-image: url(../../img/ripple-giveaway-sprite.png);
+						background-position: -12px top;
+						background-repeat: no-repeat;
+					}
+				}
+			}
+		}
+	}
+}
+
+//get ripple tab
+#t-getripple{
+	h1{
+		text-align: left;
+		position: relative;
+		padding-bottom: 10px;
+		margin-bottom: 5px;
+		span{
+			font-size:16px;
+			position: absolute;
+			right:0;
+			bottom:15px;
+		}
+	}
+	h2{
+		position: relative;
+		font-size:26px;
+		span{
+			font-size:11px;
+			position: absolute;
+			right:0;
+		}
+	}
+
+	ul.walkthrough-list{
+		margin:0;
+		padding:0;
+		width:100%;
+		li{
+			width:22%;
+			margin-right: 2.5%;
+			display:block;
+			float:left;
+			border:1px solid #ddd;
+			height:250px;
+			.border-radius(5px);
+			background-repeat: no-repeat;
+			background-image: url(../../img/ripple-giveaway-sprite.png);
+			background-position: -102px  30px;
+			opacity:0.6;
+			position: relative;
+			a{
+				display:block;
+				width:100%;
+				height:100%;
+			}
+			&#wiki{
+				background-position: -285px 30px;
+			}
+			&#video{
+				background-position: -475px 30px;
+			}
+			&#list{
+				background-position: -665px 30px;
+			}
+			&#code, &#wiki, &#list, &#video{
+				&.done{
+					background-position: -850px 30px;
+					opacity:1;
+					.transition-duration(0s);
+					.text{
+						color:#ddd;
+						.bigger{
+							color:#ddd;
+						}
+					}
+				}
+
+			}
+
+
+			.text{
+				width:100%;
+				position: absolute;
+				text-align: center;
+				top:180px;
+				font-family: @sans;
+				color:#333;
+				.bigger{
+					display:block;
+					font-size:22px;
+					color:@blue;
+				}
+			}
+
+			&:hover{
+				cursor: pointer;
+				opacity: 1;
+				.transition-duration(2s);
+			}
+		}
+	} //end UL
+
+	.claim{
+		clear:both;
+		padding-top: 15px;
+		text-align: center;
+		p{
+			font-family: @sans;
+			font-size: 18px;
+		}
+		.btn{
+			min-width: 200px;
+		}
+	}
+
+	//start congrats page
+
+	#congrats{
+		padding:0;
+		h1{
+			border:0;
+			text-align: center;
+			span.tick{
+				background-image: url(../../img/ripple-giveaway-sprite.png);
+				background-position: -870px 0px;
+				background-repeat:no-repeat;
+				width:130px;
+				height:130px;
+				position: static;
+				display:block;
+				right:auto;
+				margin:0 auto;
+			}
+		}
+
+		h2{
+			text-align: center;
+			.bold(48px);
+			padding:10px 0;
+			background-color: @lightgreen;
+			margin-bottom: 5px;
+		}
+
+		.rate-timestamp{
+			text-align: center;
+			color: #ccc;
+		}
+
+		h3{
+			font-family: @sans;
+			font-size: 26px;
+		}
+
+		#dev-callout{
+			text-align: center;
+			ul{
+				list-style-position: inside;
+				padding:0;
+			}
+			li{
+				padding:5px 0;
+			}
+			a{
+				font-family: @sans;
+			}
+		}
+		.bottom-links{
+		}
+	}
+}
+
+//overridding styles from the register tab
+#t-register, #t-signup{
+	.storeinfo{
+		margin-top: 8px;
+	}
+	.mode-welcome{
+		h2{
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			margin-bottom: 0;
+			margin:0 auto;
+			padding:0 5px;
+			width:300px;
+			font-size: 22px;
+			background-color: @yellow;
+		}
+
+		h1{
+			padding-top: 15px;
+		}
+		text-align: center;
+		.secret{
+			margin:35px 0 75px 0;
+			text-align: left;
+			float:left;
+			width:100%;
+			padding:12px 5px;
+			background-color: @lightyellow;
+			border-color: darken(@lightyellow,20%);
+			position: relative;
+
+			.btn{
+				position: absolute;
+				top:6px;
+				right:5px;
+				min-width: 150px;
+				&.btn-warning{
+					border-color:@orange;
+				}
+			}
+			.key{
+				float:left;
+				font-size:35px;
+				display: block;
+				font-family:@currencyFont;
+				letter-spacing: -1px;
+				line-height: 1em;
+			}
+		}
+
+
+	}
+}
+
+//new password tooltip
+  #password_tooltip, #wallet_tooltip {
+    //border:1px solid fadeout(#ccc,50%);
+    font-family: @sans;
+    color:darken(@blue,10%);
+    background-color:lighten(@blue,53%);
+    padding:10px;
+    font-size:14px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    width:280px;
+    //.box-shadow(0 0px 5px rgba(0,0,0,0.1));
+
+  }
+
+//overriding modals
+#devModal.modal{
+	width:850px;
+	margin:-235px 0 0 -425px;
+	h3{
+		margin:0;
+		font-size:22px;
+		font-family: @sans;
+	}
+	&.hide{
+		display:none;
+	}
+	.modal-footer{
+		padding:5px 15px 5px;
+	}
+}
+
+//errors page
+.errors{
+	#mc-embedded-subscribe-form{
+		margin-top: 0;
+	}
+}
+
+
+
+//mailchimp form
+#mc-embedded-subscribe-form{
+	margin-top: 10px;
+
+	span{
+		display:inline;
+	}
+
+	ul{
+		overflow:hidden;
+		margin:0;
+		padding-left:15px;
+	}
+
+	li{
+		list-style: none;
+	}
+
+	input[type="radio"]{
+		float:left;
+		margin-right: 5px;
+	}
+
+	label{
+		line-height: 1em;
+		margin-top:15px;
+	}
+
+	input[type="email"]{
+		width:50%;
+	}
+
+	h2{
+		margin:0;
+		font-size:22px;
+		color: @rippleblue ;
+	}
+
+	h3{
+		font-size: 18px;
+		margin:0;
+	}
+
+	.asterisk{
+		color:@orange;
+	}
+}

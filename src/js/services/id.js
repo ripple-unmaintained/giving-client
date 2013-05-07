@@ -265,9 +265,9 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
         $location.search('tab', tab);
       }
       if (this.isReturning()) {
-        $location.path('/login');
+        $location.path('/signup');
       } else {
-        $location.path('/register');
+        $location.path('/signup');
       }
     }
   };

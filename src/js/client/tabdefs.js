@@ -49,12 +49,15 @@ exports["options"] = function (callback) {
 exports["feed"] = function (callback) {
   callback(require('../tabs/feed'));
 };
+
 exports["peers"] = function (callback) {
   callback(require('../tabs/peers'));
 };
+
 exports["unl"] = function (callback) {
   callback(require('../tabs/unl'));
 };
+
 exports["security"] = function (callback) {
   callback(require('../tabs/security'));
 };
@@ -63,3 +66,10 @@ exports["tx"] = function (callback) {
   callback(require('../tabs/tx'));
 };
 
+exports["signup"] = function (callback) {
+  callback(require('../tabs/signup'));
+};
+
+exports["getripple"] = function (callback) {
+  callback(require('../tabs/getripple'));
+};

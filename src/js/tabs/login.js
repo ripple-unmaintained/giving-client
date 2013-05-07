@@ -1,5 +1,6 @@
 var util = require('util');
-var Tab = require('../client/tab').Tab;
+    Tab = require('../client/tab').Tab,
+    webutil = require('../util/web');
 
 var LoginTab = function ()
 {
@@ -24,8 +25,14 @@ LoginTab.prototype.angular = function (module) {
                                   function ($scope, $element, $routeParams,
                                             $location, $id)
   {
+    //  if register hash is empty then redirect to signup
+    if ( ! $routeParams.register)
+      $location.path('/signup');
+
     if ($id.loginStatus) {
-      $location.path('/balance');
+      var funded = false; //TODO: API call for our address and github id
+      var defaultDestination = funded ? '/balance' : '/getripple'
+      webutil.redirect(defaultDestination);
       return;
     }
 
@@ -64,19 +71,29 @@ LoginTab.prototype.angular = function (module) {
 
       $scope.loginForm.login_username.$setViewValue(username);
       $scope.loginForm.login_password.$setViewValue(password);
+      // set register
+      var register = ($routeParams.register) ? {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      } : false;
 
       setImmediate(function () {
-        $id.login($scope.username, $scope.password, function(backendName, err, success) {
+        app.id.login($scope.username, $scope.password, register,
+          function(backendName, err, success) {
           $scope.ajax_loading = false;
           if (success) {
             if ($routeParams.tab) {
               $location.path('/'+$routeParams.tab);
             } else {
-              $location.path('/balance');
+              var funded = false; //TODO: API call for our address and github id
+              var defaultDestination = funded ? '/balance' : '/getripple'
+              webutil.redirect(defaultDestination);
             }
           } else {
             $scope.backendMessages.push({'backend':backendName, 'message':err.message});
           }
+
+          $scope.$apply();
         });
       });
 

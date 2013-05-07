@@ -11,6 +11,7 @@ body {
 }
 body.loaded {
   background: #F9F9F9 url("../../img/bg_tile.png");
+  //background: #000;
 }
 
 body:before, body:after {
@@ -74,24 +75,23 @@ body.loaded #appLoading {
 
 #logo {
   position: absolute;
-  top: 15px;
+  top: 30px;
   left: 10px;
 
   img {
-    width: 228px;
-    height: 55px;
+    width: 150px;
   }
 }
 
 header {
   .clearfix();
-  height: 145px;
+  height: 95px;
 }
 
 header nav {
   position: absolute;
-  top: 78px;
-  left: 0;
+  top: 10px;
+  left: 160px;
 }
 
 header nav ul {
@@ -102,8 +102,8 @@ header nav ul {
   > li {
     position: relative;
     float: left;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align: center;
     z-index: 1;
 
@@ -112,7 +112,7 @@ header nav ul {
       width: 70px;
       color: #000;
       display: block;
-      height: 55px;
+      height: 73px;
       cursor: pointer;
       .transition-duration(0.2s);
       background-image: url(../../img/sprite_j.png);
@@ -129,10 +129,10 @@ header nav ul {
     }
 
     &.active {
-      font-family: 'OpenSansBold';
+      //font-family: 'OpenSansBold';
 
       span {
-        display: none;
+        //display: none;
       }
 
       > a {

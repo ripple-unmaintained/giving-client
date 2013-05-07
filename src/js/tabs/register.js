@@ -1,5 +1,6 @@
 var util = require('util');
-var Tab = require('../client/tab').Tab;
+    Tab = require('../client/tab').Tab,
+    webutil = require('../util/web');
 
 var RegisterTab = function ()
 {
@@ -18,12 +19,15 @@ RegisterTab.prototype.generateHtml = function ()
 
 };
 
+
 RegisterTab.prototype.angular = function (module) {
   module.controller('RegisterCtrl', ['$scope', '$location', 'rpId',
                                      function ($scope, $location, $id)
   {
     if ($id.loginStatus) {
-      $location.path('/balance');
+      var funded = false; //TODO: API call for our address and github id
+      var defaultDestination = funded ? '/balance' : '/getripple'
+      webutil.redirect(defaultDestination);
       return;
     }
 
@@ -50,14 +54,18 @@ RegisterTab.prototype.angular = function (module) {
 
     $scope.register = function()
     {
-      $id.register($scope.username, $scope.password1, function(key){
+      app.id.register($scope.username, $scope.password1, {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      },
+        function(key){
         $scope.password = new Array($scope.password1.length+1).join("*");
         $scope.keyOpen = key;
         $scope.key = $scope.keyOpen[0] + new Array($scope.keyOpen.length).join("*");
-
         $scope.mode = 'welcome';
       }, $scope.masterkey);
     };
+
 
     /**
      * Registration cases
@@ -84,7 +92,13 @@ RegisterTab.prototype.angular = function (module) {
 
       var regInProgress;
 
-      $id.login($scope.username, $scope.password1, function(backendName,error,success){
+      // if register params exist create object else make it false
+      var register = ($routeParams.register) ? {
+        id: $routeParams.id,
+        hash: $routeParams.register
+      } : false;
+
+      app.id.login($scope.username, $scope.password1, register, function(backendName,error,success){
         if (!regInProgress) {
           if (!success) {
             regInProgress = true;
@@ -94,18 +108,22 @@ RegisterTab.prototype.angular = function (module) {
             if ($scope.masterkey && $scope.masterkey != $scope.userCredentials.master_seed) {
               $scope.mode = 'masterkeyerror';
             } else {
-              $location.path('/balance');
+              webutil.redirect('/balance');
             }
           }
         }
       });
     };
 
+    // workaround to preserve get query string
+    $scope.open_wallet = function(){
+      $location.path('/login');
+    };
+
     $scope.goToBalance = function()
     {
       $scope.mode = 'form';
       $scope.reset();
-
       $location.path('/balance');
     };
 
