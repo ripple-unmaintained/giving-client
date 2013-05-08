@@ -195,10 +195,18 @@ exports.tabName = function() {
 /**
  * Redirect to proper location based on funding
  */
-exports.defaultDestination = function($id) {
-  var funded = true;
-  var defaultDestination = ((funded) && ($id)) ? '/balance' : '/getripple'
-  webutil.redirect(defaultDestination);
+exports.defaultDestination = function(register) {
+  // check if user is funded and redirect accordingly
+  if (register.hasOwnProperty('id')) {
+    $.post(Options.giveawayServer + '/user/' + register.id, {
+      action: 'isFunded',
+      register: register.hash
+    }, function(res) {
+      var defaultDestination = (res.funded) ? '/balance' : '/getripple'
+      webutil.redirect(defaultDestination);
+    });
+  } else
+    webutil.redirect('/getripple');
 }
 
 /**
@@ -217,4 +225,16 @@ exports.giveawayServerStatus = function(cb) {
       cb(false);
     }
   });
+}
+
+/**
+ * Return register hash object from url or return false
+ * @return {mixed} return object or bool
+ */
+exports.getRegisterHash = function($routeParams) {
+   // if register params exist create object else make it false
+  return ($routeParams.register) ? {
+    id: $routeParams.id,
+    hash: $routeParams.register
+  } : false;
 }
