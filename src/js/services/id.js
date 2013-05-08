@@ -76,11 +76,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
   Id.prototype.init = function ()
   {
-    // if register params exist create object else make it false
-    var register = ($routeParams.register) ? {
-      id: $scope.$routeParams.id,
-      hash: $scope.$routeParams.register
-    } : false;
+    var register = webutil.getRegisterHash($routeParams);
 
     // Initializing sjcl.random doesn't really belong here, but there is no other
     // good place for it yet.

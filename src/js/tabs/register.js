@@ -15,8 +15,6 @@ RegisterTab.prototype.parent = 'main';
 RegisterTab.prototype.generateHtml = function ()
 {
   return require('../../jade/tabs/register.jade')();
-
-
 };
 
 
@@ -26,7 +24,7 @@ RegisterTab.prototype.angular = function (module) {
   {
     // if logged in redirect appropriately
     if ($id.loginStatus)
-      webutil.defaultDestination($id);
+      webutil.defaultDestination($id.giveaway_register);
     //  if register hash is empty then redirect to signup
     else if ( ! $routeParams.register)
       $location.path('/signup');

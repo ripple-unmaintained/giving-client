@@ -68,10 +68,7 @@ LoginTab.prototype.angular = function (module) {
       $scope.loginForm.login_username.$setViewValue(username);
       $scope.loginForm.login_password.$setViewValue(password);
       // set register
-      var register = ($routeParams.register) ? {
-        id: $routeParams.id,
-        hash: $routeParams.register
-      } : false;
+     var register = webutil.getRegisterHash($routeParams);
 
       setImmediate(function () {
         $id.login($scope.username, $scope.password, register,
@@ -81,7 +78,7 @@ LoginTab.prototype.angular = function (module) {
             if ($routeParams.tab) {
               $location.path('/'+$routeParams.tab);
             } else {
-              webutil.defaultDestination();
+              webutil.defaultDestination($id.giveaway_register);
             }
           } else {
             $scope.backendMessages.push({'backend':backendName, 'message':err.message});
