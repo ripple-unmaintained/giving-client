@@ -87,10 +87,10 @@ SignupTab.prototype.angular = function(module) {
         var button_text = '';
         // if server is down disable button
         if (!status) {
-          $scope.serverDown = true;
+          $scope.offline = true;
           button_text = 'server down';
         } else {
-          $scope.serverDown = false;
+          $scope.offline = false;
           button_text = 'git started';
         }
         $('#git-started').val(button_text);

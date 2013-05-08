@@ -3,7 +3,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     h1 Money is about to go open souce
     h2 To get started, authenticate with github
     img(src="img/octocat.jpg", width="168px")
-    input(type="button", id="git-started", class="btn btn-info", value="git started", ng-click="oauth()", ng-disabled="sending || serverDown")
+    input(type="button", id="git-started", class="btn btn-info", value="git started", ng-click="oauth()", ng-disabled="sending || offline")
     span (only accounts created prior to May 13, 2013 are eligible)
     h3 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
