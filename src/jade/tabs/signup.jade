@@ -3,7 +3,7 @@ section.single.content.signup(ng-controller="SignupCtrl",class="giveaway")
     h1 Money is about to go open souce
     h2 To get started, authenticate with github
     img(src="img/octocat.jpg", width="168px")
-    input(type="button", class="btn btn-info", value="git started", ng-click="oauth()", ng-disabled="sending")
+    input(type="button", id="git-started", class="btn btn-info", value="git started", ng-click="oauth()", ng-disabled="sending || serverDown")
     span (only accounts created prior to May 13, 2013 are eligible)
     h3 Be first. Build a better tomorrow.
   div.step-two(ng-show="step == 'two'")
@@ -62,7 +62,7 @@ div#devModal.modal.hide.fade(aria-hidden="true")
     ul
       li giving you early access to the network
       li giving you ripples to test and use within the system
-      li asking you to register your email so you can receive updates about the platform 
+      li asking you to register your email so you can receive updates about the platform
       li collecting data about user engagement in the Ripple client via analytics tools to improve usability of the client
       lu listening to feedback on how to make the Ripple network awesome
 

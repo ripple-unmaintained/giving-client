@@ -16,13 +16,14 @@ SignupTab.prototype.generateHtml = function() {
 };
 
 SignupTab.prototype.angular = function(module) {
-  var app = this.app;
-
   module.controller('SignupCtrl', ['$scope', '$location', 'rpId', '$routeParams',
 
   function($scope, $location, $id, $routeParams) {
+    // check every 5 seconds when server is down
+    var giveawayIntervalTime = 5000;
     // set errors
     $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
+
     // handle cutoff error
     if (_.contains($scope.errors, 'cutoff')) {
       $scope.step = 'errors';
@@ -37,14 +38,22 @@ SignupTab.prototype.angular = function(module) {
       $scope.email = $routeParams.email;
 
     } else {
-      // test to see if user has confirmed
-      $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
-        action: 'associated',
-        register: $routeParams.register
-      }, function(d) {
-        if (d.associated) webutil.redirect('/login');
-      });
+      if ($routeParams.id) {
+        // test to see if user has confirmed
+        $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
+          action: 'associated',
+          register: $routeParams.register
+        }, function(d) {
+          if (d.associated) webutil.redirect('/login');
+        });
+      }
+      // regular landing page
       $scope.step = 'one';
+      // create interval to keep checking status
+      setInterval(function() {
+        checkGiveawayServer();
+      }, giveawayIntervalTime);
+      checkGiveawayServer();
     }
 
     $scope.oauth = function() {
@@ -69,6 +78,26 @@ SignupTab.prototype.angular = function(module) {
       $scope.mode = 'welcome';
       $scope.$apply();
     };
+
+    // handy function to check if server is down
+
+    function checkGiveawayServer() {
+      // check if server is up
+      webutil.giveawayServerStatus(function(status) {
+        var button_text = '';
+        // if server is down disable button
+        if (!status) {
+          $scope.serverDown = true;
+          button_text = 'server down';
+        } else {
+          $scope.serverDown = false;
+          button_text = 'git started';
+        }
+        $('#git-started').val(button_text);
+        $scope.$apply();
+      });
+    }
+
   }]);
 };
 
