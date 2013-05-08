@@ -24,9 +24,12 @@ GetRippleTab.prototype.angular = function(module) {
 
     if (!$id.loginStatus) return $id.goId(); //Don't see this page until you log in.
 
+    // check every 5 seconds when server is down
+    var giveawayIntervalTime = 5000;
     var stateUpdated = false;
     $scope.register = false;
     $scope.address = false;
+    $scope.offline = false;
     $scope.payout = 0;
 
     // watch for payout variable to updated
@@ -79,8 +82,7 @@ GetRippleTab.prototype.angular = function(module) {
             if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
 
             // if user has already been funded hide page
-            if (user.funded)
-              $scope.claim = true;
+            if (user.funded) $scope.claim = true;
             else {
               $scope.earn = true;
               // iterate states
@@ -178,6 +180,23 @@ GetRippleTab.prototype.angular = function(module) {
         $scope.$apply();
       });
     };
+
+    // create interval to keep checking status
+    setInterval(function() {
+      checkGiveawayServer();
+    }, giveawayIntervalTime);
+    checkGiveawayServer();
+
+
+    // handy function to check if server is down
+
+    function checkGiveawayServer() {
+      // check if server is up
+      webutil.giveawayServerStatus(function(status) {
+        $scope.offline = !status;
+        $scope.$apply();
+      });
+    }
 
   }]);
 };

@@ -84,15 +84,8 @@ SignupTab.prototype.angular = function(module) {
     function checkGiveawayServer() {
       // check if server is up
       webutil.giveawayServerStatus(function(status) {
-        var button_text = '';
-        // if server is down disable button
-        if (!status) {
-          $scope.offline = true;
-          button_text = 'server down';
-        } else {
-          $scope.offline = false;
-          button_text = 'git started';
-        }
+        var button_text = (status) ? 'git started' : 'server offline';
+        $scope.offline = !status;
         $('#git-started').val(button_text);
         $scope.$apply();
       });
