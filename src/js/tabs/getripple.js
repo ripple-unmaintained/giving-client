@@ -5,8 +5,6 @@ var util = require('util'),
 
 var GetRippleTab = function() {
   Tab.call(this);
-
-  //this.on('retrigger', this.handleRetrigger.bind(this));
 };
 
 util.inherits(GetRippleTab, Tab);
@@ -29,7 +27,39 @@ GetRippleTab.prototype.angular = function(module) {
     var stateUpdated = false;
     $scope.register = false;
     $scope.address = false;
-    $scope.payout = false;
+    $scope.payout = 0;
+
+    // watch for payout variable to updated
+    $scope.$watch('payout', function() {
+      var ask, bid, unrounded;
+      $scope.$watch('book.asks', function(asks) {
+        if (!(asks.length)) return;
+        ask = asks[0].quality / 1000000;
+        if (!ask) return;
+        unrounded = $scope.payout / Math.sqrt(ask * bid);
+        $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2); //TODO: Round using filter, not in this code
+        $scope.updated_time = currentTime();
+      }, true);
+
+      $scope.$watch('book.bids', function(bids) {
+        if (!(bids.length)) return;
+        bid = 0.000001 / bids[0].quality;
+        if (!bid) return;
+        unrounded = $scope.payout / Math.sqrt(ask * bid);
+        $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2);
+        $scope.updated_time = currentTime();
+      }, true);
+    });
+
+    //$scope.$on('payout', function(arg1){
+    //  console.log('helloa',arg1);
+    //});
+
+    // update payout variable
+    $.get(Options.giveawayServer + '/user/payout', function(d) {
+      $scope.payout = d.payout;
+      $scope.$broadcast('payout', 'hia');
+    });
 
     // watch user blob for changes
     $rootScope.$watch('userBlob', function() {
@@ -42,23 +72,30 @@ GetRippleTab.prototype.angular = function(module) {
         if (!stateUpdated) {
           var total = 0;
           // fetch state determined by user id
-          $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, function(user) {
+          $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, {
+            register: $scope.register.hash
+          }, function(user) {
+            // check if current id equals funded address and that funded address exists
+            if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
 
             // if user has already been funded hide page
-            if (user.funded) $scope.claim = true;
+            if (user.funded)
+              $scope.claim = true;
+            else {
+              $scope.earn = true;
+              // iterate states
+              _.each(user.state, function(v, i) {
+                //  state is true then update class
+                if (v) $scope.updateState(i);
+                total += (v) ? 1 : 0;
+              });
 
-            // iterate states
-            _.each(user.state, function(v, i) {
-              //  state is true then update class
-              if (v) $scope.updateState(i);
-              total += (v) ? 1 : 0;
-            });
-
-            // if total is giveaway total then show finish
-            if (total == giveawayTotal) $scope.finish = true;
-            // don't run again
-            stateUpdated = true;
-            $scope.$apply();
+              // if total is giveaway total then show finish
+              if (total == giveawayTotal) $scope.finish = true;
+              // don't run again
+              stateUpdated = true;
+              $scope.$apply();
+            }
           });
         }
       }
@@ -92,9 +129,6 @@ GetRippleTab.prototype.angular = function(module) {
       $rootScope.$apply();
     };
 
-
-    //$scope.bounty = 500; //Define this here for consistency.
-
     function loadOffers() {
       // Make sure we unsubscribe from any previously loaded orderbook
       if ($scope.book &&
@@ -119,41 +153,12 @@ GetRippleTab.prototype.angular = function(module) {
       } else if (hour > 12) {
         hour -= 12;
       }
-      var minutes = ""+(currentdate.getMinutes());
+      var minutes = "" + (currentdate.getMinutes());
       if (minutes.length == 1) {
-        minutes = "0"+minutes;
+        minutes = "0" + minutes;
       }
-        return hour + ":" + minutes + meridian;
+      return hour + ":" + minutes + meridian;
     }
-
-    // watch for payout variable to updated
-    $scope.$watch('payout', function() {
-      // update payout variable
-      $.get(Options.giveawayServer + '/user/payout', function(d){
-        $scope.payout = d.payout;
-      });
-    });
-
-
-
-    var ask, bid, unrounded;
-    $scope.$watch('book.asks', function(asks) {
-      if (!(asks.length)) return;
-      ask = asks[0].quality / 1000000;
-      if (!ask) return;
-      unrounded = $scope.payout / Math.sqrt(ask * bid);
-      $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2); //TODO: Round using filter, not in this code
-      $scope.updated_time = currentTime();
-    }, true);
-
-    $scope.$watch('book.bids', function(bids) {
-      if (!(bids.length)) return;
-      bid = 0.000001 / bids[0].quality;
-      if (!bid) return;
-      unrounded = $scope.payout / Math.sqrt(ask * bid);
-      $scope.usd_equivalent = (Math.round(unrounded * 100) / 100).toFixed(2);
-      $scope.updated_time = currentTime();
-    }, true);
 
     // do funding
     $scope.congrats = function() {
@@ -186,7 +191,3 @@ GetRippleTab.prototype.handleRetrigger = function() {
 };
 
 module.exports = GetRippleTab;
-
-
-
-//==============================
