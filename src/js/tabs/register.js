@@ -106,7 +106,7 @@ RegisterTab.prototype.angular = function (module) {
             if ($scope.masterkey && $scope.masterkey != $scope.userCredentials.master_seed) {
               $scope.mode = 'masterkeyerror';
             } else {
-              webutil.redirect('/balance');
+              webutil.defaultDestination($id.giveaway_register);
             }
           }
         }
@@ -116,13 +116,6 @@ RegisterTab.prototype.angular = function (module) {
     // workaround to preserve get query string
     $scope.open_wallet = function(){
       $location.path('/login');
-    };
-
-    $scope.goToBalance = function()
-    {
-      $scope.mode = 'form';
-      $scope.reset();
-      $location.path('/balance');
     };
 
     $scope.reset();
