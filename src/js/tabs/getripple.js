@@ -32,8 +32,8 @@ GetRippleTab.prototype.angular = function(module) {
     $scope.offline = false;
     $scope.payout = 0;
 
-    // watch for payout variable to updated
-    $scope.$watch('payout', function() {
+    // receive payout event
+    $scope.$on('payout', function() {
       var ask, bid, unrounded;
       $scope.$watch('book.asks', function(asks) {
         if (!(asks.length)) return;
@@ -54,14 +54,10 @@ GetRippleTab.prototype.angular = function(module) {
       }, true);
     });
 
-    //$scope.$on('payout', function(arg1){
-    //  console.log('helloa',arg1);
-    //});
-
     // update payout variable
     $.get(Options.giveawayServer + '/user/payout', function(d) {
       $scope.payout = d.payout;
-      $scope.$broadcast('payout', 'hia');
+      $scope.$broadcast('payout');
     });
 
     // watch user blob for changes
@@ -71,34 +67,30 @@ GetRippleTab.prototype.angular = function(module) {
         // setup variables
         $scope.address = $rootScope.userBlob.data.account_id;
         $scope.register = $rootScope.userBlob.data.giveaway_register;
-        // if state hasn't been updated
+        // if state hasn't been updated, only run on initilizaiton
         if (!stateUpdated) {
-          var total = 0;
-          // fetch state determined by user id
-          $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, {
-            register: $scope.register.hash
-          }, function(user) {
-            // check if current id equals funded address and that funded address exists
-            if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
+          // if user has been paid out
+          if ($id.giveaway_register.hasOwnProperty('funded_amount')) {
+            // update giveaway
+            updateGiveawayState({
+              funded: $id.giveaway_register.funded_amount,
+              funded_address: $id.giveaway_register.funded_address,
+              state: false,
+              total: false
+            });
+          } else {
+            // if user has not been paid out yet
+            var total = 0;
+            // show loading throbber
+            $scope.loading = true;
+            // fetch state determined by user id
+            $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, {
+              register: $scope.register.hash
+            }, function(user) {
+              updateGiveawayState(user);
+            });
+          }
 
-            // if user has already been funded hide page
-            if (user.funded) $scope.claim = true;
-            else {
-              $scope.earn = true;
-              // iterate states
-              _.each(user.state, function(v, i) {
-                //  state is true then update class
-                if (v) $scope.updateState(i);
-                total += (v) ? 1 : 0;
-              });
-
-              // if total is giveaway total then show finish
-              if (total == giveawayTotal) $scope.finish = true;
-              // don't run again
-              stateUpdated = true;
-              $scope.$apply();
-            }
-          });
         }
       }
     });
@@ -187,6 +179,43 @@ GetRippleTab.prototype.angular = function(module) {
     }, giveawayIntervalTime);
     checkGiveawayServer();
 
+    // update feedback state
+    function updateGiveawayState(user) {
+      // if user has already been funded hide page
+      if (user.funded) {
+        $scope.claim = true;
+        $scope.payout = user.funded;
+        // check if current id equals funded address and that funded address exists
+        if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
+        // check if blob has the payout saved, if not save it
+        if (!$id.giveaway_register.hasOwnProperty('funded_amount')) {
+          var data = {};
+          _.extend(data, $id.giveaway_register, {
+            funded_amount: user.funded,
+            funded_address: user.funded_address
+          });
+          // update blob
+          $id.updateBlob('giveaway_register', data);
+        }
+      } else {
+        var total = 0;
+        $scope.earn = true;
+        // iterate states
+        _.each(user.state, function(v, i) {
+          //  state is true then update class
+          if (v) $scope.updateState(i);
+          total += (v) ? 1 : 0;
+        });
+
+        // if total is giveaway total then show finish
+        if (total == giveawayTotal) $scope.finish = true;
+        // don't run again
+        stateUpdated = true;
+      }
+
+      // don't interrupt digest already in progress
+      if (!$scope.$$phase) $scope.$apply();
+    }
 
     // handy function to check if server is down
 
