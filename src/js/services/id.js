@@ -157,7 +157,6 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     if (registered)
       return false;
 
-    var self = this;
     $.post(Options.giveawayServer + '/user/' + register.id, {
         action: 'address',
         register: register.hash,
