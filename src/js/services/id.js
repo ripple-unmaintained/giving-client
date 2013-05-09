@@ -281,6 +281,8 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
       // if register exists will overwrite current blog register
       if (register) {
+        console.log('blob', blob.data.giveaway_register.hash);
+        console.log('register', register);
         // update register hash in blob if not equal to current register hash
         if (blob.data.giveaway_register.hash != register.hash)
         {
