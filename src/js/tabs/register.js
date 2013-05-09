@@ -29,6 +29,15 @@ RegisterTab.prototype.angular = function (module) {
     else if ( ! $routeParams.register)
       $location.path('/signup');
 
+    // fix ngBlur
+    module.directive('ngBlur', function() {
+      return function(scope, elem, attrs) {
+        elem.bind('blur', function() {
+          scope.$apply(attrs.ngBlur);
+        });
+      };
+    });
+
     $scope.backendChange = function()
     {
       $id.blobBackends = $scope.blobBackendCollection.something.value.split(',');

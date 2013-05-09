@@ -6,6 +6,7 @@ section.single.content(ng-controller="RegisterCtrl")
       input#register_username(
         name='register_username', type='text', ng-model="username",
         ng-click="showWalletTooltip=true",
+        ng-blur="showWalletTooltip=false",
         required)
       div#wallet_tooltip(ng-show="showWalletTooltip") Name your wallet something memorable
       .horiz
@@ -15,6 +16,7 @@ section.single.content(ng-controller="RegisterCtrl")
             name='register_password1', type='password'
             ng-model="password1",
             ng-click="showPasswordTooltip=true",
+            ng-blur="showPasswordTooltip=false",
             rp-strong-password, required, rp-same-in-set="passwordSet")
         div
           label(for='register_password2') Re-Enter Password
