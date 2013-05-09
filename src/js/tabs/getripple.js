@@ -87,7 +87,9 @@ GetRippleTab.prototype.angular = function(module) {
             $.get(Options.giveawayServer + '/user/state/' + $scope.register.id, {
               register: $scope.register.hash
             }, function(user) {
-              updateGiveawayState(user);
+              // only update if it is a valid response
+              if(user.hasOwnProperty('state'))
+                updateGiveawayState(user);
             });
           }
 
