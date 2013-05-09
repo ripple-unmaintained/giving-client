@@ -1,5 +1,5 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
-  div(id="loading", ng-show="loading && !claim && !finish && !earn")
+  div(id="loading", ng-show="loading && !claim && !finish && !earn && !error")
     img(src="img/throbber.gif")
   div.padding(ng-hide="claim || offline", ng-show="earn")
     h1 Earn {{ payout }} ripples (XRP)
@@ -58,3 +58,5 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
         a(href="https://github.com/rippleFoundation" , target="_blank")  github
   div(ng-show="offline")
     p Server is offline
+  div(ng-show="error")
+    p Error

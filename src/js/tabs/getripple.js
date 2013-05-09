@@ -70,10 +70,10 @@ GetRippleTab.prototype.angular = function(module) {
         // if state hasn't been updated, only run on initilizaiton
         if (!stateUpdated) {
           // if user has been paid out
-          if ($id.giveaway_register.hasOwnProperty('funded_amount')) {
+          if ($id.giveaway_register.hasOwnProperty('funded')) {
             // update giveaway
             updateGiveawayState({
-              funded: $id.giveaway_register.funded_amount,
+              funded: $id.giveaway_register.funded,
               funded_address: $id.giveaway_register.funded_address,
               state: false,
               total: false
@@ -90,6 +90,9 @@ GetRippleTab.prototype.angular = function(module) {
               // only update if it is a valid response
               if(user.hasOwnProperty('state'))
                 updateGiveawayState(user);
+              else
+                // throw error here
+                $scope.error = true;
             });
           }
 
@@ -190,11 +193,11 @@ GetRippleTab.prototype.angular = function(module) {
         // check if current id equals funded address and that funded address exists
         if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
         // check if blob has the payout saved, if not save it
-        if (!$id.giveaway_register.hasOwnProperty('funded_amount')) {
+        if (!$id.giveaway_register.hasOwnProperty('funded')) {
           var data = {};
           _.extend(data, $id.giveaway_register, {
-            funded_amount: user.funded,
-            funded_address: user.funded_address
+            funded: user.funded,
+            funded_address: user.ripple_address
           });
           // update blob
           $id.updateBlob('giveaway_register', data);
