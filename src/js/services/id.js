@@ -333,9 +333,18 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     }
   };
 
+  Id.prototype.updateBlob = function(index, data) {
+    // index blob index
+    _.extend($scope.userBlob.data[index], data);
+    // set blob
+    $blob.set(this.blobBackends,
+    this.username, this.password,
+    $scope.userBlob, function() {
+      $scope.$broadcast('$blobSave');
+    });
+  };
+
   // smart redirecting
 
   return new Id();
 }]);
-
-
