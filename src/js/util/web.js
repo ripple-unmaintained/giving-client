@@ -198,7 +198,7 @@ exports.tabName = function() {
  */
 exports.defaultDestination = function(register) {
   // check if user is funded and redirect accordingly
-  if (register.hasOwnProperty('id')) {
+  if ((register) && register.hasOwnProperty('id')) {
     $.post(Options.giveawayServer + '/user/' + register.id, {
       action: 'isFunded',
       register: register.hash
