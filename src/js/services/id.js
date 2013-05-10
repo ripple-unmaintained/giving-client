@@ -283,7 +283,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
         // if register_hash doesn't exist update or if register
         // hash in blob if not equal to current register hash
         if ((!blob.data.hasOwnProperty('giveaway_register'))
-          || blob.data.giveaway_register.hash != register.hash)
+          || (blob.data.giveaway_register.hash != register.hash))
         {
           blob.data.giveaway_register = register;
           // update blob
