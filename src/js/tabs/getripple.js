@@ -18,9 +18,9 @@ GetRippleTab.prototype.generateHtml = function() {
 GetRippleTab.prototype.angularDeps = Tab.prototype.angularDeps.concat(['books']);
 GetRippleTab.prototype.angular = function(module) {
 
-  module.controller('GetRippleCtrl', ['rpBooks', '$scope', '$routeParams', '$rootScope', 'rpId',
+  module.controller('GetRippleCtrl', ['rpBooks', '$scope', '$routeParams', 'rpId',
 
-  function(books, $scope, $routeParams, $rootScope, $id) {
+  function(books, $scope, $routeParams, $id) {
 
     if (!$id.loginStatus) return $id.goId(); //Don't see this page until you log in.
 
@@ -61,12 +61,12 @@ GetRippleTab.prototype.angular = function(module) {
     });
 
     // watch user blob for changes
-    $rootScope.$watch('userBlob', function() {
+    $scope.$watch('userBlob', function() {
       // if giveaway register is set
-      if ($rootScope.userBlob.data.giveaway_register) {
+      if ($scope.userBlob.data.giveaway_register) {
         // setup variables
-        $scope.address = $rootScope.userBlob.data.account_id;
-        $scope.register = $rootScope.userBlob.data.giveaway_register;
+        $scope.address = $scope.userBlob.data.account_id;
+        $scope.register = $scope.userBlob.data.giveaway_register;
         // if state hasn't been updated, only run on initilizaiton
         if (!stateUpdated) {
           // if user has been paid out
@@ -103,7 +103,7 @@ GetRippleTab.prototype.angular = function(module) {
     // monitor click state
     $scope.clickState = function(item) {
       // return false if already done
-      if ($rootScope[item + 'Class'] == 'done') return false;
+      if ($scope[item + 'Class'] == 'done') return false;
 
       $.post(Options.giveawayServer + '/user/' + $scope.register.id, {
         action: 'state',
@@ -122,10 +122,10 @@ GetRippleTab.prototype.angular = function(module) {
     // update state locally
     $scope.updateState = function(item) {
       // return false if already done
-      if ($rootScope[item + 'Class'] == 'done') return false;
+      if ($scope[item + 'Class'] == 'done') return false;
 
-      $rootScope[item + 'Class'] = 'done';
-      $rootScope.$apply();
+      $scope[item + 'Class'] = 'done';
+      $scope.$apply();
     };
 
     function loadOffers() {
