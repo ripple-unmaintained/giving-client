@@ -76,8 +76,6 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
   Id.prototype.init = function ()
   {
-    var register = webutil.getRegisterHash($routeParams);
-
     // Initializing sjcl.random doesn't really belong here, but there is no other
     // good place for it yet.
     for (var i = 0; i < 8; i++) {
@@ -102,10 +100,6 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     $scope.$watch('userBlob',function(){
       // XXX Maybe the blob service should handle this stuff?
       $scope.$broadcast('$blobUpdate');
-
-      // if register exists will overwrite current blog register
-      if (register)
-        $scope.userBlob.data.giveaway_register = register;
 
       if (self.username && self.password) {
         $blob.set(self.blobBackends,
