@@ -178,6 +178,9 @@ exports.escapeRegExp = function(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
 
+// load url helper
+exports.url = require('url');
+
 /*
  * Proper local redirect, for getting rid of query strings
  */
@@ -189,8 +192,7 @@ exports.redirect = function(to) {
  * Return tab name
  */
 exports.tabName = function() {
-
-  return (window.location.hash.replace('#/', '')) ? true : false;
+  return (this.url.parse(window.location).hash.replace('#/', '')) ? true : false;
 }
 
 /**
