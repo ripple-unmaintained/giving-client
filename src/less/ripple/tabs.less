@@ -474,8 +474,12 @@ html.t-balance header nav ul > li.active#nav-wallet > a:after {
   }
 
   form {
-    .error {
-      margin-top: 0;
+    .amount {
+      .clearfix;
+      > * {
+        display: block;
+        float: left;
+      }
     }
   }
 
@@ -730,10 +734,6 @@ html.t-balance header nav ul > li.active#nav-wallet > a:after {
 }
 
 #t-history {
-  .filter-tabs a {
-    cursor: pointer;
-  }
-
   ul li.all > a.active,
   ul li.all > a:hover,
   ul li.all > a:after {
@@ -837,8 +837,12 @@ html.t-balance header nav ul > li.active#nav-wallet > a:after {
     input {
       margin-bottom: 35px;
     }
-    .error {
-      margin-top: -30px;
+    .errorGroup {
+      top: -30px;
+    }
+
+    .submitsection {
+      margin-bottom: 30px;
     }
 
     .send_alternatives {

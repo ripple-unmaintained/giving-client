@@ -21,8 +21,6 @@ TradeTab.prototype.angularDeps = Tab.prototype.angularDeps.concat(['books']);
 
 TradeTab.prototype.angular = function(module)
 {
-  var self = this;
-
   module.controller('TradeCtrl', ['rpBooks', '$scope', 'rpId', 'rpNetwork',
                                   function (books, $scope, $id, $network)
   {
@@ -117,7 +115,7 @@ TradeTab.prototype.angular = function(module)
       tx.on('success', function (res) {
         $scope.$apply(function () {
           setEngineStatus(res, false);
-          $scope.done(this.hash);
+          $scope.done(tx.hash);
 
           // Remember pair and increase order
           var found;
