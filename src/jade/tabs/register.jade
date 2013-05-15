@@ -7,7 +7,7 @@ section.single.content(ng-controller="RegisterCtrl")
         name='register_username', type='text', ng-model="username",
         ng-click="showWalletTooltip=true",
         ng-blur="showWalletTooltip=false",
-        required)
+        required, rp-focus)
       div#wallet_tooltip(ng-show="showWalletTooltip") Name your wallet something memorable
       .horiz
         div
