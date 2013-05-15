@@ -532,3 +532,18 @@ module.directive('ngUpload', function() {
     }
   };
 });
+
+
+/**
+ * Focus element on render
+ */
+module.directive('rpFocus', ['$timeout', function($timeout) {
+  return function($scope, element) {
+    $timeout(function(){
+      $scope.$watch(function () {return element.is(':visible')}, function(newValue) {
+        if (newValue === true)
+          element.focus();
+      })
+    })
+  }
+}]);

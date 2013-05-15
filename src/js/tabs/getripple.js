@@ -74,7 +74,7 @@ GetRippleTab.prototype.angular = function(module) {
             // update giveaway
             updateGiveawayState({
               funded: $id.giveaway_register.funded,
-              funded_address: $id.giveaway_register.funded_address,
+              ripple_address: $id.giveaway_register.ripple_address,
               state: false,
               total: false
             });
@@ -187,7 +187,7 @@ GetRippleTab.prototype.angular = function(module) {
     // update feedback state
     function updateGiveawayState(user) {
       // if user has already been funded hide page
-      if (user.funded) {
+      if (user.funded || user.funding) {
         $scope.claim = true;
         $scope.payout = user.funded;
         // check if current id equals funded address and that funded address exists
@@ -197,7 +197,7 @@ GetRippleTab.prototype.angular = function(module) {
           var data = {};
           _.extend(data, $id.giveaway_register, {
             funded: user.funded,
-            funded_address: user.ripple_address
+            ripple_address: user.ripple_address
           });
           // update blob
           $id.updateBlob('giveaway_register', data);
