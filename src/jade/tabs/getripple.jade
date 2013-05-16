@@ -1,5 +1,5 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
-  div(id="loading", ng-show="loading && !claim && !finish && !earn && !error")
+  div(id="loading", ng-show="loading && (!claim && !finish && !earn && !error && !offline)")
     img(src="img/throbber.gif")
   div.padding(ng-hide="claim || offline", ng-show="earn")
     h1 Earn {{ payout }} ripples (XRP)

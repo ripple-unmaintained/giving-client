@@ -228,6 +228,8 @@ GetRippleTab.prototype.angular = function(module) {
       // check if server is up
       webutil.giveawayServerStatus(function(status) {
         $scope.offline = !status;
+        if (!$scope.offline)
+          $scope.loading = false;
         $scope.$apply();
       });
     }
