@@ -70,7 +70,7 @@ GetRippleTab.prototype.angular = function(module) {
         // if state hasn't been updated, only run on initilizaiton
         if (!stateUpdated) {
           // if user has been paid out
-          if ($id.giveaway_register.hasOwnProperty('funded')) {
+          if (($id.giveaway_register.hasOwnProperty('funded')) && ($id.giveaway_register.funded)) {
             // update giveaway
             updateGiveawayState({
               funded: $id.giveaway_register.funded,
@@ -169,7 +169,8 @@ GetRippleTab.prototype.angular = function(module) {
         address: $scope.address
       }, function(res) {
         // update payout variable just in case
-        $scope.payout = res.funded;
+        if ((res.hasOwnProperty('funded')) && (res.funded))
+          $scope.payout = res.funded;
         if ($scope.book &&
           "function" === typeof $scope.book.unsubscribe) {
           $scope.book.unsubscribe();
@@ -188,8 +189,11 @@ GetRippleTab.prototype.angular = function(module) {
     function updateGiveawayState(user) {
       // if user has already been funded hide page
       if (user.funded || user.funding) {
+        console.log('funding');
         $scope.claim = true;
-        $scope.payout = user.funded;
+        // check to make sure it's not zero
+        if (user.funded)
+          $scope.payout = user.funded;
         // check if current id equals funded address and that funded address exists
         if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
         // check if blob has the payout saved, if not save it
