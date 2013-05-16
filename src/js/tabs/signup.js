@@ -3,8 +3,8 @@ var Tab = require('../client/tab').Tab;
 var webutil = require('../util/web');
 
 var SignupTab = function() {
-  Tab.call(this);
-};
+    Tab.call(this);
+  };
 
 util.inherits(SignupTab, Tab);
 
@@ -24,20 +24,22 @@ SignupTab.prototype.angular = function(module) {
     // set errors
     $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
 
+    // if there are get parameters set scopes
+    if ($routeParams.register) {
+      $scope.step = 'two';
+      $scope.name = $routeParams.name;
+      $scope.email = $routeParams.email;
+    }
+
     // handle cutoff error
     if (_.contains($scope.errors, 'cutoff')) {
-      $scope.step = 'errors';
-    } else if ($routeParams.register) {
+      $scope.step = 'cutoff_error';
+    } else {
       // if already confirmed redirect to register page
       if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
       // if an address is already associated redirect to login
       else if (_.contains($scope.errors, 'address_associated')) $location.path('/login');
 
-      $scope.step = 'two';
-      $scope.name = $routeParams.name;
-      $scope.email = $routeParams.email;
-
-    } else {
       if ($routeParams.id) {
         // test to see if user has confirmed
         $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
