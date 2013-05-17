@@ -189,7 +189,6 @@ GetRippleTab.prototype.angular = function(module) {
     function updateGiveawayState(user) {
       // if user has already been funded hide page
       if (user.funded || user.funding) {
-        console.log('funding');
         $scope.claim = true;
         // check to make sure it's not zero
         if (user.funded)
