@@ -3,8 +3,8 @@ var Tab = require('../client/tab').Tab;
 var webutil = require('../util/web');
 
 var SignupTab = function() {
-  Tab.call(this);
-};
+    Tab.call(this);
+  };
 
 util.inherits(SignupTab, Tab);
 
@@ -16,35 +16,46 @@ SignupTab.prototype.generateHtml = function() {
 };
 
 SignupTab.prototype.angular = function(module) {
-  var app = this.app;
-
   module.controller('SignupCtrl', ['$scope', '$location', 'rpId', '$routeParams',
 
   function($scope, $location, $id, $routeParams) {
+    // check every 5 seconds when server is down
+    var giveawayIntervalTime = 5000;
     // set errors
     $scope.errors = ($routeParams.errors) ? $routeParams.errors.split(',') : [];
+
+    if ($routeParams.register) {
+      $scope.name = $routeParams.name;
+      $scope.email = $routeParams.email;
+    }
+
     // handle cutoff error
     if (_.contains($scope.errors, 'cutoff')) {
-      $scope.step = 'errors';
+      $scope.step = 'cutoff_error';
     } else if ($routeParams.register) {
       // if already confirmed redirect to register page
       if (_.contains($scope.errors, 'already_confirmed')) $location.path('/register');
       // if an address is already associated redirect to login
       else if (_.contains($scope.errors, 'address_associated')) $location.path('/login');
-
+      // step two increment
       $scope.step = 'two';
-      $scope.name = $routeParams.name;
-      $scope.email = $routeParams.email;
-
     } else {
-      // test to see if user has confirmed
-      $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
-        action: 'associated',
-        register: $routeParams.register
-      }, function(d) {
-        if (d.associated) webutil.redirect('/login');
-      });
+      if ($routeParams.id) {
+        // test to see if user has confirmed
+        $.post(Options.giveawayServer + '/user/' + $routeParams.id, {
+          action: 'associated',
+          register: $routeParams.register
+        }, function(d) {
+          if (d.associated) webutil.redirect('/login');
+        });
+      }
+      // regular landing page
       $scope.step = 'one';
+      // create interval to keep checking status
+      setInterval(function() {
+        checkGiveawayServer();
+      }, giveawayIntervalTime);
+      checkGiveawayServer();
     }
 
     $scope.oauth = function() {
@@ -69,6 +80,19 @@ SignupTab.prototype.angular = function(module) {
       $scope.mode = 'welcome';
       $scope.$apply();
     };
+
+    // handy function to check if server is down
+
+    function checkGiveawayServer() {
+      // check if server is up
+      webutil.giveawayServerStatus(function(status) {
+        var button_text = (status) ? 'git started' : 'server offline';
+        $scope.offline = !status;
+        $('#git-started').val(button_text);
+        $scope.$apply();
+      });
+    }
+
   }]);
 };
 

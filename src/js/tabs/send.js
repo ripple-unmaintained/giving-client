@@ -19,8 +19,6 @@ SendTab.prototype.generateHtml = function ()
 
 SendTab.prototype.angular = function (module)
 {
-  var self = this;
-
   module.controller('SendCtrl', ['$scope', '$timeout', '$routeParams', 'rpId', 'rpNetwork',
                                  function ($scope, $timeout, $routeParams, $id, $network)
   {
@@ -34,6 +32,9 @@ SendTab.prototype.angular = function (module)
 
       $scope.contact = webutil.getContact($scope.userBlob.data.contacts,addr);
       if ($scope.contact) {
+        if ($scope.send.recipient === $scope.contact.address) {
+          $scope.send.recipient = $scope.contact.name;
+        }
         $scope.send.recipient_name = $scope.contact.name;
         $scope.send.recipient_address = $scope.contact.address;
 
@@ -53,15 +54,19 @@ SendTab.prototype.angular = function (module)
     }, true);
 
     $scope.$watch('send.currency', function () {
+      $scope.send.currency_code = $scope.send.currency ?
+        $scope.send.currency.slice(0, 3).toUpperCase() : "XRP";
       $scope.update_send();
     }, true);
 
     var pathUpdateTimeout;
     $scope.update_send = function () {
-      var currency = $scope.send.currency ?
-            $scope.send.currency.slice(0, 3).toUpperCase() : "XRP";
+      var currency = $scope.send.currency_code;
       var recipient = $scope.send.recipient_address;
       var formatted = "" + $scope.send.amount + " " + currency.slice(0, 3);
+
+      // Trying to send XRP to self
+      $scope.send.self = recipient == $scope.address && $scope.send.amount;
 
       // if formatted or money to send is 0 then don't calculate paths or offer to send
       if (parseFloat(formatted) === 0)
@@ -95,18 +100,22 @@ SendTab.prototype.angular = function (module)
         $scope.send.alt = null;
 
         if ($scope.send.amount_feedback.is_native()) {
-          $scope.send.path_status = 'native';
+          $scope.send.type = 'native';
           $scope.check_xrp_sufficiency();
         } else {
-          if (pathUpdateTimeout) clearTimeout(pathUpdateTimeout);
-          pathUpdateTimeout = setTimeout($scope.update_paths, 500);
+          $scope.send.type = 'nonnative';
         }
+
+        if (pathUpdateTimeout) clearTimeout(pathUpdateTimeout);
+        pathUpdateTimeout = setTimeout($scope.update_paths, 500);
       } else {
         $scope.send.path_status = 'waiting';
       }
     };
 
     $scope.check_xrp_sufficiency = function () {
+      $scope.send.fund_status = "none";
+
       var recipient = $scope.send.recipient_address;
       //do some remote request to find out the balance, if it's not stored in memory already.
       if ($scope.xrp_memory.hasOwnProperty(recipient)) {
@@ -133,7 +142,7 @@ SendTab.prototype.angular = function (module)
         var total = $scope.send.amount_feedback.add($scope.xrp_memory[recipient]);
         var reserve_base = $scope.account.reserve_base;
         if (total.compareTo(reserve_base) < 0) {
-          $scope.send.path_status = "insufficient-xrp";
+          $scope.send.fund_status = "insufficient-xrp";
           $scope.xrp_deficiency = reserve_base.subtract($scope.xrp_memory[recipient]);
         }
       }
@@ -165,7 +174,7 @@ SendTab.prototype.angular = function (module)
 
                 return alt;
               });
-              $scope.send.alt = $scope.send.alternatives[0];
+//              $scope.send.alt = $scope.send.alternatives[0];
             }
           });
         })
@@ -208,17 +217,19 @@ SendTab.prototype.angular = function (module)
         amount: '',
         amount_prev: new Amount(),
         currency: $scope.xrp.name,
-        path_status: 'waiting'
+        currency_code: "XRP",
+        path_status: 'waiting',
+        fund_status: 'none'
       };
       $scope.nickname = '';
       $scope.error_type = '';
       $scope.resetAddressForm();
       if ($scope.sendForm) $scope.sendForm.$setPristine(true);
+    };
 
-      // Focus on first input
-      setImmediate(function() {
-        $('#sendForm').find('input:first').focus();
-      });
+    $scope.cancelConfirm = function () {
+      $scope.mode = "form";
+      $scope.send.alt = null;
     };
 
     $scope.resetAddressForm = function() {
@@ -298,9 +309,7 @@ SendTab.prototype.angular = function (module)
      */
     $scope.send_prepared = function () {
       // check if paths are available, if not then it is a direct send
-      $scope.send.indirect  = ($scope.send.path_status != 'native')
-                            ? ($scope.send.alt.paths.length > 1)
-                            : false;
+      $scope.send.indirect = $scope.send.alt ? $scope.send.alt.paths.length : false;
 
       $scope.confirm_wait = true;
       $timeout(function () {
@@ -332,11 +341,11 @@ SendTab.prototype.angular = function (module)
       }
 
       tx.payment($id.account, addr, amount.to_json());
-      if (!amount.is_native()) {
-        if ($scope.send.alt) {
-          tx.send_max($scope.send.alt.send_max);
-          tx.paths($scope.send.alt.paths);
-        } else {
+      if ($scope.send.alt) {
+        tx.send_max($scope.send.alt.send_max);
+        tx.paths($scope.send.alt.paths);
+      } else {
+        if (!amount.is_native()) {
           tx.build_path(true);
         }
       }
@@ -418,6 +427,9 @@ SendTab.prototype.angular = function (module)
           break;
         case 'tec':
           $scope.tx_result = "claim";
+          break;
+        case 'tef':
+          $scope.tx_result = "failure";
           break;
         default:
           console.warn("Unhandled engine status encountered!");

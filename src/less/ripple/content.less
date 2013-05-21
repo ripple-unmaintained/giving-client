@@ -98,18 +98,6 @@ body {
       vertical-align: middle;
     }
 
-    .editing td.command {
-      padding: 15px 10px;
-    }
-
-    .editing td {
-      padding: 9px 5px 8px;
-    }
-
-    .editing td.name {
-      padding-left: 40px;
-    }
-
     // A class for formatting columns with currency amounts
     th.rpamount {
       text-align: right;
@@ -185,6 +173,7 @@ body {
         padding-left: 8px;
         padding-right: 16px;
         .transition-duration(0.2s);
+        cursor: pointer;
 
         margin-left: 6px;
         margin-right: 16px;
@@ -232,6 +221,8 @@ body {
   box-shadow: 2px 1px 10px #b5b5b5;
 }
 .tooltip {
+  opacity: 1 !important;
+
   &.top .tooltip-arrow {
     display: none;
   }

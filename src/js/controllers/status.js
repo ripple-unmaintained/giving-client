@@ -23,28 +23,34 @@ module.controller('StatusCtrl', ['$scope', '$element', '$compile', 'rpId',
   };
 
   $scope.$watch('balances', function () {
-    $scope.orderedBalances = [];
-    $.each($scope.balances,function(index,balance){
-      $scope.orderedBalances.push(balance);
+    $scope.orderedBalances = _.filter($scope.balances, function (balance) {
+      // XXX Maybe we should show zero balances if there is outgoing trust in
+      //     that currency.
+      return !balance.total.is_zero();
     });
     $scope.orderedBalances.sort(function(a,b){
       return parseFloat(Math.abs(b.total.to_text())) - parseFloat(Math.abs(a.total.to_text()));
     });
 
-    $scope.balance_count = Object.keys($scope.balances).length;
+    $scope.balance_count = $scope.orderedBalances.length;
+  }, true);
 
-
+  // Username
+  $scope.$watch('userCredentials', function(){
+    var username = $scope.userCredentials.username;
+    $scope.shortUsername = null;
+    if(username && username.length > 25) {
+      $scope.shortUsername = username.substring(0,24)+"...";
+    }
   }, true);
 
   // Low balance indicator
   $scope.$watch('account', function(){
     if ($scope.account.reserve) {
-      var reserve = $scope.account.reserve.product_human(2);
-      $scope.account_reserve = reserve;
       var balance = Amount.from_json($scope.account.Balance);
 
       if (balance.is_valid()) {
-        $scope.lowBalance = balance.compareTo(reserve) <= 0;
+        $scope.lowBalance = balance.compareTo($scope.account.reserve_low_balance) <= 0;
       } else {
         $scope.lowBalance = false;
       }

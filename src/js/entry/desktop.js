@@ -68,7 +68,15 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
           mainMenu: tab.mainMenu,
           template: tab.generateHtml()
         };
+
         $routeProvider.when('/'+tabName, config);
+
+        if (tab.extraRoutes) {
+          _.each(tab.extraRoutes, function(route) {
+            $.extend({}, config, route.config);
+            $routeProvider.when(route.name, config);
+          });
+        }
 
         _.each(tab.aliases, function (alias) {
           $routeProvider.when('/'+alias, config);
@@ -78,8 +86,7 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
   });
 
   // only redirect if tabName does not exist
-  if ( ! webutil.tabName())
-    webutil.redirect('/signup');
+  $routeProvider.otherwise({redirectTo: '/getripple'});
 }]);
 
 app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',

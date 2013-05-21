@@ -5,9 +5,9 @@ section.single.content(ng-controller="RegisterCtrl")
       label(for='register_username') Create Wallet Name
       input#register_username(
         name='register_username', type='text', ng-model="username",
-        ng-mousedown="showWalletTooltip=true;",
-        ng-blur="showWalletTooltip=false;",
-        required)
+        ng-click="showWalletTooltip=true",
+        ng-blur="showWalletTooltip=false",
+        required, rp-focus)
       div#wallet_tooltip(ng-show="showWalletTooltip") Name your wallet something memorable
       .horiz
         div
@@ -15,11 +15,9 @@ section.single.content(ng-controller="RegisterCtrl")
           input#register_password(
             name='register_password1', type='password'
             ng-model="password1",
-            ng-mousedown="showPasswordTooltip=true;",
-            ng-blur="showPasswordTooltip=false;",
-            rp-strong-password, required)
-          p.text-error(ng-show="registerForm.register_password2.$error.rpSameAs && registerForm.register_password2.$dirty") Passwords do not match
-
+            ng-click="showPasswordTooltip=true",
+            ng-blur="showPasswordTooltip=false",
+            rp-strong-password, required, rp-same-in-set="passwordSet")
         div
           label(for='register_password2') Re-Enter Password
           input#register_password2(
@@ -30,15 +28,18 @@ section.single.content(ng-controller="RegisterCtrl")
         div(class="strength {{strength}}")
           {{strength}}
         div#password_tooltip(ng-show="showPasswordTooltip") Please mix letters, numbers and symbols in your password.
+        div#password_tooltip(ng-show="registerForm.register_password1.$error.rpSameInSet && registerForm.register_password2.$dirty") Passwords do not match
       div(ng-show="showMasterKeyInput")
         label(for='register_masterkey')
           | Secret Account Key&nbsp;
           a(ng-click="showMasterKeyInput=false;") (hide)
-        input#register_masterkey(name='register_masterkey', type='text', ng-model="masterkey", rp-master-key)
+        input#register_masterkey(name='register_masterkey', type='text', ng-model="masterkey", rp-master-key, rp-focus)
         .errorBox(ng-show="registerForm.register_masterkey.$error.rpMasterKey")
           p.text-error Secret Account Key is invalid
       .submitsection
-        button.btn.btn-info(type='submit', ng-disabled='registerForm.$invalid || disableSubmit') Create Wallet
+        button.btn.btn-info(type='submit', ng-disabled='registerForm.$invalid || submitLoading')
+          span(ng-show="submitLoading") Loading...
+          span(ng-hide="submitLoading") Create Wallet
         .storeinfo
           | Store your wallet with:&nbsp;
           br

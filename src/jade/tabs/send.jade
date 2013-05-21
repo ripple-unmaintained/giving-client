@@ -22,7 +22,8 @@ section#t-send.single.content(ng-controller='SendCtrl')
       placeholder='Contact name or Ripple address'
       ng-model='send.recipient'
       rp-destination, required
-      rp-autofill='$routeParams.to')
+      rp-autofill='$routeParams.to'
+      rp-focus)
     .errorGroup(rp-errors='send_destination')
       .success(rp-error-valid ng-show='send.recipient != send.recipient_address')
         | {{send.recipient_address}}
@@ -54,13 +55,14 @@ section#t-send.single.content(ng-controller='SendCtrl')
     label(for='send_amount') Recipient will receive
     .amount
       input.value#send_amount(
-        name='send_amount', type='number', min='0', step='any'
+        name='send_amount', type='text'
         ng-model='send.amount'
-        ng-pattern='/^[0-9.]+$/', required, ng-maxlength='20'
+        required
         rp-autofill='$routeParams.amount'
         rp-autofill-amount
         rp-max-amount
-        rp-max-amount-currency='{{send.currency}}')
+        rp-max-amount-currency='{{send.currency}}'
+        rp-positive-amount)
       input.currency#send_amount_currency(
         name='send_amount_currency', type='text'
         rp-combobox="currency_query", rp-combobox-select
@@ -68,32 +70,31 @@ section#t-send.single.content(ng-controller='SendCtrl')
         rp-autofill='$routeParams.amount'
         rp-autofill-currency)
     .errorGroup(rp-errors='send_amount')
-      //.success(rp-error-valid)
-      //  | {{amount_feedback | rpamount}} {{amount_feedback | rpcurrency}}
       .error(rp-error-on='required')
         | Please enter an amount.
-      .error(rp-error-on='pattern')
-        | Not a valid amount.
-      .error(rp-error-on='maxlength')
+      .error(rp-error-on='rpAmount')
         | Not a valid amount.
       .error(rp-error-on='rpMaxAmount')
         | This transaction exceeds your balance, you can send a max. of {{account.max_spend | rpamount:{rel_precision: 0} }} XRP
+      .error(ng-show="send.type == 'native' && send.self") What's the point of sending XRP to yourself?
+    .submitsection(ng-show="send.type == 'native'")
+      button.btn.btn-success.submit(type='submit', ng-disabled='sendForm.$invalid || send.self') Send XRP
+    p.literal(ng-show="send.fund_status == 'insufficient-xrp'") Destination account is unfunded; send at least {{xrp_deficiency | rpamount}} XRP to initialize it.&nbsp;
+      a(href="https://ripple.com/wiki/Reserves", target="_blank") More information
     p.literal(ng-show="send.path_status == 'waiting'") Please enter the transaction details.
-    p.literal.throbber(ng-show="send.path_status == 'pending'") Calculating paths
-    p.literal(ng-show="send.path_status == 'no-path'") No path found!
-    p.literal(ng-show="send.path_status == 'insufficient-xrp'") Destination account is unfunded; send at least {{xrp_deficiency | rpamount}} XRP to initialize it.&nbsp;
-     a(href="https://ripple.com/wiki/Reserves", target="_blank") More information
+    p.literal.throbber(ng-show="send.path_status == 'pending' && send.currency_code != 'XRP'") Calculating paths
+    p.literal.throbber(ng-show="send.path_status == 'pending' && send.currency_code == 'XRP'") Calculating alternatives
+    p.literal(ng-show="send.path_status == 'no-path' && send.currency_code != 'XRP'") No path found!
     p.literal(ng-show="send.path_status == 'error'") Error while calculating path
     .currency_sets(rp-if="send.path_status == 'done'")
-      .label You can send
+      .label(ng-show="send.currency_code != 'XRP'") You can send
+      .label(ng-show="send.currency_code == 'XRP'") Or you can send
       ul
         li(ng-repeat="alt in send.alternatives")
           p
             span.amnt {{alt.amount | rpamount:{rel_precision: 4, rel_min_precision: 2} }}
             span.currency {{alt.amount | rpcurrency }}
           button.btn.btn-success(type="submit", ng-disabled='sendForm.$invalid', ng-click="send.alt = alt") Send {{ alt.amount | rpcurrency }}
-    .submitsection(ng-show="send.path_status == 'native'")
-      button.btn.btn-success.submit(type='submit', ng-disabled='sendForm.$invalid') Send
 
   //- N2. Waiting for path
 
@@ -124,7 +125,7 @@ section#t-send.single.content(ng-controller='SendCtrl')
     p.literal Are you sure?
     div
       p.submitsection
-        button.btn.back(ng-click='mode="form"') &laquo; Back
+        button.btn.back(ng-click='cancelConfirm()') &laquo; Back
         button.btn.btn-success.submit(
           type='submit'
           ng-click='send_confirmed()'
@@ -151,7 +152,7 @@ section#t-send.single.content(ng-controller='SendCtrl')
           | Make sure you are connected to the Internet and try again later.
         p.literal Before trying again, please ensure that the transaction has
           | not been executed already.
-    p: button.btn(ng-click='mode="form"') &laquo; Back
+    p: button.btn(ng-click='cancelConfirm()') &laquo; Back
 
   //- N6. Sent page
 
@@ -171,10 +172,13 @@ section#t-send.single.content(ng-controller='SendCtrl')
     group.result-malformed(ng-show='tx_result=="malformed"')
       h2.tx-status Transaction malformed!
       p(ng-switch on="engine_result")
-        span(ng-switch-when="temDST_TAG_NEEDED")
-          | Destionation account requires destination tag to be specified when making payments.
         span(ng-switch-default)
           | Your transaction is invalid, reason: {{engine_result}} - {{engine_result_message}}
+    group.result-malformed(ng-show='tx_result=="failure"')
+      h2.tx-status Transaction malformed!
+      p(ng-switch on="engine_result")
+        span(ng-switch-when="tefDST_TAG_NEEDED")
+          | Destination account requires destination tag to be specified when making payments.
     group.result-malformed(ng-show='tx_result=="claim"')
       h2.tx-status Transaction failed!
       p(ng-switch on="engine_result")

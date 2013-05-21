@@ -21,6 +21,10 @@ module.filter('rpamount', function () {
 
     if (!input) return "n/a";
 
+    if (opts.xrp_human && input === ("" + parseInt(input, 10))) {
+      input = input + ".0";
+    }
+
     var amount = Amount.from_json(input);
     if (!amount.is_valid()) return "n/a";
 
@@ -56,6 +60,18 @@ module.filter('rpcurrency', function () {
 
     var amount = Amount.from_json(input);
     return amount.currency().to_json();
+  };
+});
+
+/**
+ * Get the currency issuer.
+ */
+module.filter('rpissuer', function () {
+  return function (input) {
+    if (!input) return "";
+
+    var amount = Amount.from_json(input);
+    return amount.issuer().to_json();
   };
 });
 

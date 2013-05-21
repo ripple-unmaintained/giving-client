@@ -18,8 +18,6 @@ BalanceTab.prototype.generateHtml = function ()
 
 BalanceTab.prototype.angular = function (module)
 {
-  var self = this;
-
   module.controller('BalanceCtrl', ['$scope', 'rpId', 'rpNetwork',
                                      function ($scope, $id, $network)
   {
@@ -34,7 +32,7 @@ BalanceTab.prototype.angular = function (module)
       var transactions = [];
 
       $.each(events,function(){
-        var event = this;
+        var event = jQuery.extend(true, {}, this);
         var effects = [];
 
         if (event.effects) {
@@ -42,7 +40,9 @@ BalanceTab.prototype.angular = function (module)
             var effect = this;
             if (effect.type == 'offer_funded'
                 || effect.type == 'offer_partially_funded'
-                || effect.type == 'offer_bought') {
+                || effect.type == 'offer_bought'
+                || (effect.type === 'offer_canceled' &&
+                    event.transaction.type !== 'offercancel')) {
               effects.push(effect);
             }
           });

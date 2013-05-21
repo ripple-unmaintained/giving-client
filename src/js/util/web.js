@@ -1,45 +1,37 @@
 // returns the raw address after removing any parameters
-exports.stripRippleAddress = function (addr)
-{
-  if(typeof(addr)=='string')
-  {
-    var index=addr.indexOf("?");
-    if(index>=0)
-    {
-      return(addr.slice(0,index));
+exports.stripRippleAddress = function(addr) {
+  if (typeof(addr) == 'string') {
+    var index = addr.indexOf("?");
+    if (index >= 0) {
+      return (addr.slice(0, index));
     }
   }
-  return(addr);
+  return (addr);
 }
 //returns the destination tag of an address if there is one
-exports.getDestTagFromAddress = function (addr)
-{
-  var index=addr.indexOf("?");
-  if(index>=0)
-  {
-    addr=addr.slice(index,addr.length);
-    index=addr.indexOf("dt=");
-    if(index>=0)
-    {
-      addr=addr.slice(index+3,addr.length);
-      index=addr.indexOf("&");
-      if(index>0) return( addr.slice(0,index) );
-      else return(addr);
+exports.getDestTagFromAddress = function(addr) {
+  var index = addr.indexOf("?");
+  if (index >= 0) {
+    addr = addr.slice(index, addr.length);
+    index = addr.indexOf("dt=");
+    if (index >= 0) {
+      addr = addr.slice(index + 3, addr.length);
+      index = addr.indexOf("&");
+      if (index > 0) return (addr.slice(0, index));
+      else return (addr);
     }
-    index=addr.indexOf("d=");
-    if(index>=0)
-    {
-      addr=addr.slice(index+2,addr.length);
-      index=addr.indexOf("&");
-      if(index>0) return( addr.slice(0,index) );
-      else return(addr);
+    index = addr.indexOf("d=");
+    if (index >= 0) {
+      addr = addr.slice(index + 2, addr.length);
+      index = addr.indexOf("&");
+      if (index > 0) return (addr.slice(0, index));
+      else return (addr);
     }
   }
-  return(undefined);
+  return (undefined);
 }
 
-exports.removeClassPrefix = function (el, group)
-{
+exports.removeClassPrefix = function(el, group) {
   var $el = $(el);
   var classes = $el.attr("class");
 
@@ -59,10 +51,8 @@ exports.removeClassPrefix = function (el, group)
  *    .success(...)
  *    .error(webutil.getAjaxErrorHandler(callback, "Acme GET"));
  */
-exports.getAjaxErrorHandler = function (callback, context)
-{
-  return function (request, type, errorThrown)
-  {
+exports.getAjaxErrorHandler = function(callback, context) {
+  return function(request, type, errorThrown) {
     switch (type) {
       case 'timeout':
         message = "The request timed out.";
@@ -80,15 +70,15 @@ exports.getAjaxErrorHandler = function (callback, context)
   };
 };
 
-exports.scrollToTop = function ()
-{
-  $("html, body").animate({ scrollTop: 0 }, "fast");
+exports.scrollToTop = function() {
+  $("html, body").animate({
+    scrollTop: 0
+  }, "fast");
 };
 
-exports.findIssuer= function(lines, currency)
-{
-  var maxIssuer=null;
-  var maxLimit=0;
+exports.findIssuer = function(lines, currency) {
+  var maxIssuer = null;
+  var maxLimit = 0;
 
   for (var n in lines) {
     if (lines.hasOwnProperty(n)) {
@@ -104,9 +94,8 @@ exports.findIssuer= function(lines, currency)
   return maxIssuer;
 }
 
-exports.getContact = function (contacts,value)
-{
-  for (var i=0;i<contacts.length;i++) {
+exports.getContact = function(contacts, value) {
+  for (var i = 0; i < contacts.length; i++) {
     if (contacts[i].name == value || contacts[i].address == value) {
       return contacts[i];
     }
@@ -120,8 +109,7 @@ exports.getContact = function (contacts,value)
  *
  * Pass in an address or a contact name and get an address back.
  */
-exports.resolveContact = function (contacts, value)
-{
+exports.resolveContact = function(contacts, value) {
   for (var i = 0, l = contacts.length; i < l; i++) {
     if (contacts[i].name === value) {
       return contacts[i].address;
@@ -141,8 +129,7 @@ exports.resolveContact = function (contacts, value)
  * If a contact is not found with the given address, simply return the address
  * again.
  */
-exports.unresolveContact = function (contacts, value)
-{
+exports.unresolveContact = function(contacts, value) {
   try {
     for (var i = 0, l = contacts.length; i < l; i++) {
       if (contacts[i].address === value) {
@@ -160,9 +147,8 @@ exports.unresolveContact = function (contacts, value)
  *
  * @param options {array} An array of select options like {name: '', value: ''}.
  */
-exports.queryFromOptions = function (options)
-{
-  var opts = options.map(function (entry) {
+exports.queryFromOptions = function(options) {
+  var opts = options.map(function(entry) {
     return entry.name;
   });
   return exports.queryFromArray(opts);
@@ -173,14 +159,11 @@ exports.queryFromOptions = function (options)
  *
  * @param options {array} An array of options, e.g. ['First choice', '2nd']
  */
-exports.queryFromArray = function (options)
-{
-  return function (match, re) {
+exports.queryFromArray = function(options) {
+  return function(match, re) {
     if (re instanceof RegExp) {
-      return options.filter(function (name) {
-        return "string" === typeof name
-          ? name.match(re)
-          : false;
+      return options.filter(function(name) {
+        return "string" === typeof name ? name.match(re) : false;
       });
     } else return options;
   };
@@ -191,32 +174,71 @@ exports.queryFromArray = function (options)
  *
  * From: http://stackoverflow.com/questions/3446170
  */
-exports.escapeRegExp = function (str)
-{
+exports.escapeRegExp = function(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 };
+
+// load url helper
+exports.url = require('url');
 
 /*
  * Proper local redirect, for getting rid of query strings
  */
-exports.redirect = function(to)
-{
+exports.redirect = function(to) {
   window.location = window.location.pathname + '#' + to;
 }
 
 /**
  * Return tab name
  */
-exports.tabName = function()
-{
-  return (window.location.hash) ? window.location.hash.match(/(#\/)?(.+?)(\/.+)?$/)[2] : false;
+exports.tabName = function() {
+  var tab = this.url.parse(window.location).hash.replace('#/', '');
+  return (tab) ? tab : false;
 }
 
 /**
  * Redirect to proper location based on funding
  */
-exports.defaultDestination = function($id) {
-  var funded = true;
-  var defaultDestination = ((funded) && ($id)) ? '/balance' : '/getripple'
-  webutil.redirect(defaultDestination);
+exports.defaultDestination = function(register) {
+  // check if user is funded and redirect accordingly
+  if ((register) && register.hasOwnProperty('id')) {
+    $.post(Options.giveawayServer + '/user/' + register.id, {
+      action: 'isFunded',
+      register: register.hash
+    }, function(res) {
+      var defaultDestination = (res.funded) ? '/balance' : '/getripple'
+      webutil.redirect(defaultDestination);
+    });
+  } else
+    webutil.redirect('/getripple');
+}
+
+/**
+ * Return true or false if the giveaway server is up
+ * @param  {Function} cb callback
+ * @return {bool} is server up
+ */
+exports.giveawayServerStatus = function(cb) {
+  $.ajax({
+    url: Options.giveawayServer + '/user/funded_total',
+    type: "GET",
+    success: function(data) {
+      cb(true);
+    },
+    error: function(xhr, status, error) {
+      cb(false);
+    }
+  });
+}
+
+/**
+ * Return register hash object from url or return false
+ * @return {mixed} return object or bool
+ */
+exports.getRegisterHash = function($routeParams) {
+   // if register params exist create object else make it false
+  return ($routeParams.register) ? {
+    id: $routeParams.id,
+    hash: $routeParams.register
+  } : false;
 }

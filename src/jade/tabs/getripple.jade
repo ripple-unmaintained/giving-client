@@ -1,5 +1,7 @@
 section#t-getripple.single.content(ng-controller='GetRippleCtrl')
-  div.padding(ng-hide="claim")
+  div(id="loading", ng-show="loading && (!claim && !finish && !earn && !error && !offline)")
+    img(src="img/throbber.gif")
+  div.padding(ng-hide="claim || offline", ng-show="earn")
     h1 Earn {{ payout }} ripples (XRP)
       span(ng-show="payout && usd_equivalent") currently {{usd_equivalent}} USD
     h2 by completing these actions!
@@ -25,16 +27,17 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
           div.text
             |Think about our list of
             span.bigger things to build
-  div(ng-show="finish && !claim", class="claim")
+  div(ng-show="finish && !claim && !offline", class="claim")
     p Great! Now get your XRP.
     a.btn.btn-info.btn-big(ng-click='congrats()') Get funded
-  div#congrats(ng-show="claim")
+  div#congrats(ng-show="claim && !offline")
     h1
       span(class="tick")
-      |Congratulations! You have earned
+      div(ng-hide="different_address") Congratulations! You have earned
+      div(ng-show="different_address") You have been funded through another wallet
     h2 {{ payout }} XRP
     p(class="rate-timestamp", ng-show="payout && usd_equivalent && updated_time")
-        span(class="current-rate") currently {{usd_equivalent}} USD 
+        span(class="current-rate") currently {{usd_equivalent}} USD&nbsp;
         span(class="timestamp") as of {{updated_time}}
     div#dev-callout
       h3 Ready to build a better tomorrow?
@@ -53,3 +56,8 @@ section#t-getripple.single.content(ng-controller='GetRippleCtrl')
         a(href="http://ripple.com/wiki" , target="_blank")  wiki 
         &nbsp;|
         a(href="https://github.com/rippleFoundation" , target="_blank")  github
+  div(ng-show="offline")
+    p Giveaway server is offline
+  div(ng-show="error")
+    p Error
+    p {{ register }}}

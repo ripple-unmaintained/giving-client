@@ -76,11 +76,7 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
   Id.prototype.init = function ()
   {
-    // if register params exist create object else make it false
-    var register = ($routeParams.register) ? {
-      id: $scope.$routeParams.id,
-      hash: $scope.$routeParams.register
-    } : false;
+    var self = this;
 
     // Initializing sjcl.random doesn't really belong here, but there is no other
     // good place for it yet.
@@ -106,10 +102,6 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     $scope.$watch('userBlob',function(){
       // XXX Maybe the blob service should handle this stuff?
       $scope.$broadcast('$blobUpdate');
-
-      // if register exists will overwrite current blog register
-      if (register)
-        $scope.userBlob.data.giveaway_register = register;
 
       if (self.username && self.password) {
         $blob.set(self.blobBackends,
@@ -161,7 +153,6 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     if (registered)
       return false;
 
-    var self = this;
     $.post(Options.giveawayServer + '/user/' + register.id, {
         action: 'address',
         register: register.hash,
@@ -285,8 +276,10 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
 
       // if register exists will overwrite current blog register
       if (register) {
-        // update register hash in blob if not equal to current register hash
-        if (blob.data.giveaway_register.hash != register.hash)
+        // if register_hash doesn't exist update or if register
+        // hash in blob if not equal to current register hash
+        if ((!blob.data.hasOwnProperty('giveaway_register'))
+          || (blob.data.giveaway_register.hash != register.hash))
         {
           blob.data.giveaway_register = register;
           // update blob
@@ -337,9 +330,18 @@ module.factory('rpId', ['$rootScope', '$location', '$route', '$routeParams', 'rp
     }
   };
 
+  Id.prototype.updateBlob = function(index, data) {
+    // index blob index
+    _.extend($scope.userBlob.data[index], data);
+    // set blob
+    $blob.set(this.blobBackends,
+    this.username, this.password,
+    $scope.userBlob, function() {
+      $scope.$broadcast('$blobSave');
+    });
+  };
+
   // smart redirecting
 
   return new Id();
 }]);
-
-

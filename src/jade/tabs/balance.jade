@@ -11,7 +11,7 @@ section.panel.content(ng-controller="BalanceCtrl")
   group(ng-show="connected")
     .div#welcome(ng-hide='account.Balance')
       p.title Welcome to Ripple.
-      p You currently don't have any ripples (XRP). To get started you can:
+      p You currently don&#39;t have any ripples (XRP). To get started you can:
       .actions
         a.bitcoin(href="https://bitcointalk.org/index.php?topic=145506", target="_blank")
         a.receive(href="#receive")
@@ -20,7 +20,7 @@ section.panel.content(ng-controller="BalanceCtrl")
       .balancebox
         .label XRP - Ripple
         .balance
-          span(rp-tooltip="{{account.Balance | rpamount}}  (reserve: {{ account_reserve | rpamount }} XRP)") {{account.Balance | rpamount:{rel_precision: 0} }}
+          span(rp-tooltip="{{account.Balance | rpamount}}  (reserve: {{ account.reserve | rpamount }} XRP)") {{account.Balance | rpamount:{rel_precision: 0} }}
       .balancebox(ng-repeat="entry in balances", ng-hide="entry.total.is_zero()")
         .label {{entry.total | rpcurrencyfull}}
         .balance

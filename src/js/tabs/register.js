@@ -15,8 +15,6 @@ RegisterTab.prototype.parent = 'main';
 RegisterTab.prototype.generateHtml = function ()
 {
   return require('../../jade/tabs/register.jade')();
-
-
 };
 
 
@@ -26,10 +24,19 @@ RegisterTab.prototype.angular = function (module) {
   {
     // if logged in redirect appropriately
     if ($id.loginStatus)
-      webutil.defaultDestination($id);
+      webutil.defaultDestination($id.giveaway_register);
     //  if register hash is empty then redirect to signup
     else if ( ! $routeParams.register)
       $location.path('/signup');
+
+    // fix ngBlur
+    module.directive('ngBlur', function() {
+      return function(scope, elem, attrs) {
+        elem.bind('blur', function() {
+          scope.$apply(attrs.ngBlur);
+        });
+      };
+    });
 
     $scope.backendChange = function()
     {
@@ -88,7 +95,7 @@ RegisterTab.prototype.angular = function (module) {
     $scope.submitForm = function()
     {
       // Disable submit button
-      $scope.disableSubmit = true;
+      $scope.submitLoading = true;
 
       var regInProgress;
 
@@ -108,7 +115,7 @@ RegisterTab.prototype.angular = function (module) {
             if ($scope.masterkey && $scope.masterkey != $scope.userCredentials.master_seed) {
               $scope.mode = 'masterkeyerror';
             } else {
-              webutil.redirect('/balance');
+              webutil.defaultDestination($id.giveaway_register);
             }
           }
         }
@@ -118,13 +125,6 @@ RegisterTab.prototype.angular = function (module) {
     // workaround to preserve get query string
     $scope.open_wallet = function(){
       $location.path('/login');
-    };
-
-    $scope.goToBalance = function()
-    {
-      $scope.mode = 'form';
-      $scope.reset();
-      $location.path('/balance');
     };
 
     $scope.reset();

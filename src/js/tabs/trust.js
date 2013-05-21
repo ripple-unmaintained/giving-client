@@ -20,8 +20,6 @@ TrustTab.prototype.generateHtml = function ()
 
 TrustTab.prototype.angular = function (module)
 {
-  var self = this;
-
   module.controller('TrustCtrl', ['$scope', '$timeout', '$routeParams', 'rpId', '$filter', 'rpNetwork',
                                   function ($scope, $timeout, $routeParams, $id, $filter, $network)
   {
@@ -31,9 +29,11 @@ TrustTab.prototype.angular = function (module)
       $scope.mode = 'main';
       $scope.currency = 'USD';
       $scope.addform_visible = false;
+      $scope.edituser = '';
       $scope.amount = '';
       $scope.counterparty = '';
       $scope.saveAddressName = '';
+      $scope.error_account_reserve = false;
 
       // If all the form fields are prefilled, go to confirmation page
       if ($routeParams.to && $routeParams.amount) {
@@ -41,17 +41,15 @@ TrustTab.prototype.angular = function (module)
       }
     };
 
-    $scope.toggle_form = function ()
-    {
-      $scope.addform_visible = !$scope.addform_visible;
-
-      // Focus on first input
-      setImmediate(function() {
-        $('#trustForm').find('input:first').focus();
-      });
+    $scope.toggle_form = function () {
+      if($scope.addform_visible)
+        $scope.reset();
+      else
+        $scope.addform_visible = true;
     };
 
     $scope.$watch('counterparty', function() {
+      $scope.error_account_reserve = false;
       $scope.contact = webutil.getContact($scope.userBlob.data.contacts,$scope.counterparty);
       if ($scope.contact) {
         $scope.counterparty_name = $scope.contact.name;
@@ -114,7 +112,7 @@ TrustTab.prototype.angular = function (module)
           .on('success', function(res){
             $scope.$apply(function () {
               setEngineStatus(res, false);
-              $scope.granted(this.hash);
+              $scope.granted(tx.hash);
 
               // Remember currency and increase order
               var found;
@@ -187,11 +185,6 @@ TrustTab.prototype.angular = function (module)
       }
     }
 
-    // Focus on input when save address form opens
-    $scope.show_save_address_form = function(){
-      $('#contact_name').focus();
-    };
-
     $scope.saveAddress = function () {
       $scope.addressSaving = true;
 
@@ -216,10 +209,15 @@ TrustTab.prototype.angular = function (module)
       var contact = filterAddress(line.account);
       $scope.edituser = (contact) ? contact : 'User';
       $scope.validation_pattern = contact ? /^[0-9.]+$/ : /^0*(([1-9][0-9]*.?[0-9]*)|(.0*[1-9][0-9]*))$/;
-      $scope.addform_visible = true;
       $scope.currency = line.currency;
       $scope.counterparty = line.account;
       $scope.amount = +line.limit.to_text();
+
+      // Close/open form. Triggers focus on input.
+      $scope.addform_visible = false;
+      $timeout(function(){
+        $scope.addform_visible = true;
+      })
     };
 
     /**
