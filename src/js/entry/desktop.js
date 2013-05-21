@@ -86,8 +86,7 @@ app.config(['$routeProvider', '$injector', function ($routeProvider, $injector) 
   });
 
   // only redirect if tabName does not exist
-  if ( ! webutil.tabName())
-    webutil.redirect('/signup');
+  $routeProvider.otherwise({redirectTo: '/getripple'});
 }]);
 
 app.run(['$rootScope', '$injector', '$compile', '$route', '$routeParams', '$location',
