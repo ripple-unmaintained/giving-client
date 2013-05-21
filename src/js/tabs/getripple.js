@@ -207,7 +207,7 @@ GetRippleTab.prototype.angular = function(module) {
           if (user.funded)
             $scope.payout = user.funded;
           // check if current id equals funded address and that funded address exists
-          if (($id.account != user.funded_address) && (user.funded_address)) $scope.different_address = true;
+          if (($id.account !== user.ripple_address) && (user.ripple_address)) $scope.different_address = true;
           // check if blob has the payout saved, if not save it
           if (!$id.giveaway_register.hasOwnProperty('funded')) {
             var data = {};
