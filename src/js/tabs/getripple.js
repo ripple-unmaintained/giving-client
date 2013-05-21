@@ -1,6 +1,7 @@
 var util = require('util'),
   Tab = require('../client/tab').Tab,
   Amount = ripple.Amount,
+  webutil = require('../util/web'),
   giveawayTotal = 4;
 
 var GetRippleTab = function() {
@@ -241,6 +242,10 @@ GetRippleTab.prototype.angular = function(module) {
       // handy function to check if server is down
 
       function checkGiveawayServer() {
+        // only do check on getripple tab
+        if (webutil.tabName() !== 'getripple')
+          return false;
+
         // check if server is up
         webutil.giveawayServerStatus(function(status) {
           $scope.offline = !status;
