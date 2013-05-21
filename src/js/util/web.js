@@ -192,7 +192,8 @@ exports.redirect = function(to) {
  * Return tab name
  */
 exports.tabName = function() {
-  return (this.url.parse(window.location).hash.replace('#/', '')) ? true : false;
+  var tab = this.url.parse(window.location).hash.replace('#/', '');
+  return (tab) ? tab : false;
 }
 
 /**
